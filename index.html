@@ -1,0 +1,1169 @@
+<immersive>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Multi-Retailer Store | Professional E-commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#212529',
+                        accent: '#00B894',
+                        'secondary-accent': '#FF7675',
+                        background: '#F9FAFB',
+                        'light-bg': '#E8F5E9',
+                        'footer-bg-light': '#f3f4f6',
+                        'card-border': '#d1d5db',
+                        'text-muted': '#6b7280'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-gray-900">
+
+    <div id="top-offer-banner" class="w-full bg-secondary-accent text-white text-center py-2 text-sm overflow-hidden whitespace-nowrap">
+        <span id="offer-text" class="inline-block px-4 font-medium transition duration-500 ease-in-out"></span>
+    </div>
+
+    <header class="sticky top-0 z-50 bg-white shadow-md border-b border-card-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <a href="#home" onclick="navigateTo('home');" class="text-3xl font-black text-primary tracking-widest uppercase">
+                    M<span class="text-accent">SHOP</span>
+                </a>
+
+                <div class="hidden md:flex flex-grow max-w-xl mx-8">
+                    <div class="relative w-full">
+                        <input type="text" placeholder="Search products, deals, and categories..."
+                               class="w-full pl-4 pr-12 py-3 border border-card-border rounded-full focus:ring-accent focus:border-accent transition duration-150 text-base shadow-sm"
+                               aria-label="Search all products">
+                        <button class="absolute right-0 top-0 mt-3 mr-4 text-gray-500 hover:text-primary transition" aria-label="Perform Search">
+                            <i data-lucide="search" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-6">
+                    <a href="#account" onclick="navigateTo('account', 'dashboard'); return false;" class="hidden md:flex flex-col items-center text-primary hover:text-accent transition duration-150 group" aria-label="Account">
+                        <i data-lucide="user" class="w-6 h-6"></i>
+                        <span class="text-xs font-medium mt-1">Account</span>
+                    </a>
+                    
+                    <a href="#" onclick="viewWishlist()" class="relative hidden md:flex flex-col items-center text-primary hover:text-accent transition duration-150 group" aria-label="Wishlist">
+                        <i data-lucide="heart" class="w-6 h-6"></i>
+                        <span class="text-xs font-medium mt-1">Wishlist</span>
+                        <span id="wishlist-count" class="absolute top-0 right-[-8px] h-4 w-4 bg-secondary-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center scale-90">0</span>
+                    </a>
+                    
+                    <button id="cart-btn" onclick="navigateTo('cart')" class="relative flex flex-col items-center text-primary hover:text-accent transition duration-150" aria-label="Cart">
+                        <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+                        <span class="text-xs font-medium mt-1">Cart</span>
+                        <span id="cart-count" class="absolute top-0 right-[-8px] h-4 w-4 bg-secondary-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center transition duration-300 scale-90">0</span>
+                    </button>
+
+                    <button id="mobile-menu-open" class="md:hidden p-2 text-primary hover:text-accent" aria-label="Open menu">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <nav class="bg-primary text-white hidden md:block border-t border-gray-700">
+            <div class="max-w-7xl mx-auto px-4 lg:px-8">
+                <div class="flex justify-start space-x-12 h-12 items-center text-sm font-medium">
+                    
+                    <div class="relative group nav-item">
+                        <a href="#" class="flex items-center space-x-1 py-4 text-white hover:text-accent transition duration-150" aria-haspopup="true">
+                            <i data-lucide="cpu" class="w-4 h-4"></i>
+                            <span>Electronics</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                        </a>
+                        <div class="mega-menu absolute mt-0 bg-white shadow-2xl rounded-xl border border-card-border z-50 transform origin-top-left">
+                            <div class="grid grid-cols-3 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-primary mb-3 uppercase text-sm">Computing</h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">Laptops & PCs</a></li>
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">PC Peripherals</a></li>
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">Gaming Accessories</a></li>
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">Storage & Memory</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-primary mb-3 uppercase text-sm">Audio & Video</h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">Headphones & Earbuds</a></li>
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">TVs & Monitors</a></li>
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">Home Audio Systems</a></li>
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">Cameras & Drones</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-primary mb-3 uppercase text-sm">Smart Devices</h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">Smartphones</a></li>
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">Smart Watches</a></li>
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">Home Automation</a></li>
+                                        <li><a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="block hover:text-accent transition">E-Readers</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-span-3 mt-4 bg-light-bg rounded-lg p-4 flex items-center justify-between">
+                                    <p class="text-primary font-semibold">Extra 15% OFF Tech Accessories! <span class="text-accent">Shop Now →</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative group nav-item">
+                        <a href="#" class="flex items-center space-x-1 py-4 text-white hover:text-accent transition duration-150" aria-haspopup="true">
+                            <i data-lucide="carrot" class="w-4 h-4"></i>
+                            <span>Groceries</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                        </a>
+                        <div class="mega-menu absolute mt-0 bg-white shadow-2xl rounded-xl border border-card-border z-50 transform origin-top-left">
+                            <div class="grid grid-cols-3 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-primary mb-3 uppercase text-sm">Fresh & Dairy</h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        <li><a href="#category-vegetables" onclick="navigateTo('category', 'vegetables');" class="block hover:text-accent transition">Fresh Produce</a></li>
+                                        <li><a href="#category-fruits" onclick="navigateTo('category', 'fruits');" class="block hover:text-accent transition">Organic Fruits</a></li>
+                                        <li><a href="#category-dairy" onclick="navigateTo('category', 'dairy');" class="block hover:text-accent transition">Milk, Eggs & Cheese</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Meat & Seafood</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-primary mb-3 uppercase text-sm">Pantry Staples</h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        <li><a href="#" class="block hover:text-accent transition">Baking & Grains</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Snacks & Beverages</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Canned & Jarred</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Oils & Condiments</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-primary mb-3 uppercase text-sm">Home Essentials</h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        <li><a href="#category-household" onclick="navigateTo('category', 'household');" class="block hover:text-accent transition">Cleaning Supplies</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Personal Care</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Baby Products</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Pet Supplies</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-span-3 mt-4 bg-light-bg rounded-lg p-4 flex items-center justify-between">
+                                    <p class="text-primary font-semibold">Save 30% on Bulk Pantry Orders! <span class="text-accent">View Deals →</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative group nav-item">
+                        <a href="#" class="flex items-center space-x-1 py-4 text-white hover:text-accent transition duration-150" aria-haspopup="true">
+                            <i data-lucide="shirt" class="w-4 h-4"></i>
+                            <span>Fashion</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+                        </a>
+                        <div class="mega-menu absolute mt-0 bg-white shadow-2xl rounded-xl border border-card-border z-50 transform origin-top-left">
+                            <div class="grid grid-cols-3 gap-6">
+                                <div>
+                                    <h4 class="font-bold text-primary mb-3 uppercase text-sm">Clothing</h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        <li><a href="#category-fashion" onclick="navigateTo('category', 'fashion');" class="block hover:text-accent transition">Men's Outerwear</a></li>
+                                        <li><a href="#category-fashion" onclick="navigateTo('category', 'fashion');" class="block hover:text-accent transition">Women's Dresses</a></li>
+                                        <li><a href="#category-fashion" onclick="navigateTo('category', 'fashion');" class="block hover:text-accent transition">Activewear</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Kids' Collection</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-primary mb-3 uppercase text-sm">Footwear</h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        <li><a href="#category-fashion" onclick="navigateTo('category', 'fashion');" class="block hover:text-accent transition">Sneakers & Trainers</a></li>
+                                        <li><a href="#category-fashion" onclick="navigateTo('category', 'fashion');" class="block hover:text-accent transition">Boots & Oxfords</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Sandals & Flats</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Specialty Shoes</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-primary mb-3 uppercase text-sm">Accessories</h4>
+                                    <ul class="space-y-2 text-sm text-gray-700">
+                                        <li><a href="#" class="block hover:text-accent transition">Jewelry & Watches</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Bags & Luggage</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Hats & Scarves</a></li>
+                                        <li><a href="#" class="block hover:text-accent transition">Sunglasses</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-span-3 mt-4 bg-light-bg rounded-lg p-4 flex items-center justify-between">
+                                    <p class="text-primary font-semibold">New Summer Styles Just Landed! <span class="text-accent">Explore Trends →</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="flex items-center space-x-1 py-4 text-white font-bold hover:text-secondary-accent transition duration-150">
+                        <i data-lucide="zap" class="w-4 h-4"></i>
+                        <span>Flash Deals</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden transition-opacity duration-300 opacity-0 md:hidden">
+        <div class="fixed top-0 right-0 w-64 h-full bg-white shadow-xl p-6 transform translate-x-full transition-transform duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-xl font-bold text-primary">Menu</span>
+                <button id="mobile-menu-close" class="text-primary hover:text-accent p-2" aria-label="Close menu">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <nav class="flex flex-col space-y-4 font-medium">
+                <a href="#account" onclick="navigateTo('account', 'dashboard');" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="user" class="w-4 h-4 text-accent"></i> <span>Account</span></a>
+                <a href="#" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="cpu" class="w-4 h-4 text-accent"></i> <span>Electronics</span></a>
+                <a href="#" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="carrot" class="w-4 h-4 text-accent"></i> <span>Groceries</span></a>
+                <a href="#" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="shirt" class="w-4 h-4 text-accent"></i> <span>Fashion & Apparel</span></a>
+                <a href="#" class="pt-4 text-secondary-accent border-t border-card-border">Sign In / Register</a>
+            </nav>
+        </div>
+    </div>
+
+
+    <main>
+        <section id="home-page">
+            <section class="relative bg-light-bg py-16 md:py-24 overflow-hidden border-b border-card-border">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
+                    <div id="hero-slides-container">
+                        
+                        <div class="hero-slide flex flex-col lg:flex-row items-center">
+                            <div class="lg:w-1/2 text-center lg:text-left mb-10 lg:mb-0 reveal">
+                                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-primary leading-tight mb-4">
+                                    Your One - Stop Shop For <span class="text-accent">Quality Goods</span>
+                                </h1>
+                                <p class="text-xl text-gray-600 mb-8 max-w-lg mx-auto lg:mx-0">
+                                    Expand your business worldwide in just minutes with tailored currencies, languages, and customer experiences.
+                                </p>
+                                <a href="#featured-categories" class="inline-flex items-center justify-center px-10 py-4 border border-transparent text-lg font-semibold rounded-full text-white bg-accent shadow-xl hover:shadow-2xl btn-primary">
+                                    Shop All Departments
+                                    <i data-lucide="arrow-right" class="w-5 h-5 ml-2"></i>
+                                </a>
+                            </div>
+                            <div class="lg:w-1/2 flex justify-center reveal">
+                                <div class="relative w-full max-w-md aspect-square bg-white rounded-full shadow-2xl p-4 transform transition duration-700 border-4 border-card-border">
+                                    <img src="https://plus.unsplash.com/premium_photo-1679079456083-9f288e224e96?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZWxlY3Ryb25pY3N8ZW58MHx8MHx8fDA%3D"
+                                        alt="Diverse products and retail shopping experience"
+                                        class="w-full h-full object-cover rounded-full">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hero-slide flex flex-col lg:flex-row items-center">
+                            <div class="lg:w-1/2 text-center lg:text-left mb-10 lg:mb-0 reveal">
+                                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-primary leading-tight mb-4">
+                                    The <span class="text-secondary-accent">Latest Tech</span> Deals Are Here
+                                </h1>
+                                <p class="text-xl text-gray-600 mb-8 max-w-lg mx-auto lg:mx-0">
+                                    Discover cutting-edge gadgets, smart home devices, and powerful computing accessories.
+                                </p>
+                                <a href="#category-electronics" onclick="navigateTo('category', 'electronics');" class="inline-flex items-center justify-center px-10 py-4 border border-transparent text-lg font-semibold rounded-full text-white bg-secondary-accent shadow-xl hover:shadow-2xl btn-primary">
+                                    Shop Electronics
+                                    <i data-lucide="cpu" class="w-5 h-5 ml-2"></i>
+                                </a>
+                            </div>
+                            <div class="lg:w-1/2 flex justify-center reveal">
+                                <div class="relative w-full max-w-md aspect-square bg-white rounded-full shadow-2xl p-4 transform transition duration-700 border-4 border-card-border">
+                                    <img src="https://images.unsplash.com/photo-1593344484962-796055d4a3a4?q=80&w=1015&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                        alt="Latest technology devices"
+                                        class="w-full h-full object-cover rounded-full">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hero-slide flex flex-col lg:flex-row items-center">
+                            <div class="lg:w-1/2 text-center lg:text-left mb-10 lg:mb-0 reveal">
+                                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-primary leading-tight mb-4">
+                                    Freshness Delivered <span class="text-accent">Right To Your Door</span>
+                                </h1>
+                                <p class="text-xl text-gray-600 mb-8 max-w-lg mx-auto lg:mx-0">
+                                    Order organic vegetables, quality dairy, and pantry staples with fast, reliable delivery.
+                                </p>
+                                <a href="#category-vegetables" onclick="navigateTo('category', 'vegetables');" class="inline-flex items-center justify-center px-10 py-4 border border-transparent text-lg font-semibold rounded-full text-white bg-accent shadow-xl hover:shadow-2xl btn-primary">
+                                    Shop Groceries
+                                    <i data-lucide="carrot" class="w-5 h-5 ml-2"></i>
+                                </a>
+                            </div>
+                            <div class="lg:w-1/2 flex justify-center reveal">
+                                <div class="relative w-full max-w-md aspect-square bg-white rounded-full shadow-2xl p-4 transform transition duration-700 border-4 border-card-border">
+                                    <img src="https://plus.unsplash.com/premium_photo-1675798983878-604c09f6d154?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                        alt="Fresh produce and vegetables"
+                                        class="w-full h-full object-cover rounded-full">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            
+            <section class="py-16 md:pt-24 md:pb-12 bg-white border-b border-card-border" id="featured-categories">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+                    <span class="text-accent font-semibold text-sm uppercase tracking-wider">*Featured Categories</span>
+                    <h2 class="text-4xl font-extrabold text-primary mb-12 mt-2">Featured Top Categories</h2>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8">
+                        <a href="#category-vegetables" onclick="navigateTo('category', 'vegetables'); return false;" class="flex flex-col items-center group reveal">
+                            <div class="p-4 rounded-full border-2 border-card-border group-hover:border-accent transition duration-300 shadow-md group-hover:shadow-lg bg-white">
+                                <i data-lucide="carrot" class="w-8 h-8 text-accent group-hover:text-primary transition duration-300"></i>
+                            </div>
+                            <span class="mt-3 text-sm font-medium text-primary group-hover:text-accent transition duration-300">Vegetables</span>
+                        </a>
+
+                        <a href="#category-fruits" onclick="navigateTo('category', 'fruits'); return false;" class="flex flex-col items-center group reveal">
+                            <div class="p-4 rounded-full border-2 border-card-border group-hover:border-accent transition duration-300 shadow-md group-hover:shadow-lg bg-white">
+                                <i data-lucide="apple" class="w-8 h-8 text-accent group-hover:text-primary transition duration-300"></i>
+                            </div>
+                            <span class="mt-3 text-sm font-medium text-primary group-hover:text-accent transition duration-300">Fresh Fruits</span>
+                        </a>
+                        
+                        <a href="#category-dairy" onclick="navigateTo('category', 'dairy'); return false;" class="flex flex-col items-center group reveal">
+                            <div class="p-4 rounded-full border-2 border-card-border group-hover:border-accent transition duration-300 shadow-md group-hover:shadow-lg bg-white">
+                                <i data-lucide="milk" class="w-8 h-8 text-accent group-hover:text-primary transition duration-300"></i>
+                            </div>
+                            <span class="mt-3 text-sm font-medium text-primary group-hover:text-accent transition duration-300">Milk & Eggs</span>
+                        </a>
+                        
+                        <a href="#category-fashion" onclick="navigateTo('category', 'fashion'); return false;" class="flex flex-col items-center group reveal">
+                            <div class="p-4 rounded-full border-2 border-card-border group-hover:border-accent transition duration-300 shadow-md group-hover:shadow-lg bg-white">
+                                <i data-lucide="shirt" class="w-8 h-8 text-accent group-hover:text-primary transition duration-300"></i>
+                            </div>
+                            <span class="mt-3 text-sm font-medium text-primary group-hover:text-accent transition duration-300">Fashion</span>
+                        </a>
+                        
+                        <a href="#category-electronics" onclick="navigateTo('category', 'electronics'); return false;" class="flex flex-col items-center group reveal">
+                            <div class="p-4 rounded-full border-2 border-card-border group-hover:border-accent transition duration-300 shadow-md group-hover:shadow-lg bg-white">
+                                <i data-lucide="monitor" class="w-8 h-8 text-accent group-hover:text-primary transition duration-300"></i>
+                            </div>
+                            <span class="mt-3 text-sm font-medium text-primary group-hover:text-accent transition duration-300">Electronics</span>
+                        </a>
+
+                        <a href="#category-household" onclick="navigateTo('category', 'household'); return false;" class="flex flex-col items-center group reveal">
+                            <div class="p-4 rounded-full border-2 border-card-border group-hover:border-accent transition duration-300 shadow-md group-hover:shadow-lg bg-white">
+                                <i data-lucide="home" class="w-8 h-8 text-accent group-hover:text-primary transition duration-300"></i>
+                            </div>
+                            <span class="mt-3 text-sm font-medium text-primary group-hover:text-accent transition duration-300">House Hold</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="py-16 md:pt-24 md:pb-12 bg-light-bg" id="top-vendors">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+                    <span class="text-accent font-semibold text-sm uppercase tracking-wider">*Browse The Collection</span>
+                    <h2 class="text-4xl font-extrabold text-primary mb-12 mt-2">Top Vendor</h2>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-8">
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-card-border hover:shadow-xl transition duration-300 reveal">
+                            <i data-lucide="warehouse" class="w-10 h-10 text-accent mx-auto mb-3"></i>
+                            <h4 class="text-lg font-semibold text-primary">A1 Superstore</h4>
+                            <p class="text-sm text-gray-500 mt-1">Fruits, Snacks, Vegetables</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-card-border hover:shadow-xl transition duration-300 reveal">
+                            <i data-lucide="shopping-basket" class="w-10 h-10 text-secondary-accent mx-auto mb-3"></i>
+                            <h4 class="text-lg font-semibold text-primary">Xcart Store</h4>
+                            <p class="text-sm text-gray-500 mt-1">Bakery, Juice, Pickles</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-card-border hover:shadow-xl transition duration-300 reveal">
+                            <i data-lucide="coffee" class="w-10 h-10 text-primary mx-auto mb-3"></i>
+                            <h4 class="text-lg font-semibold text-primary">Minia Mart</h4>
+                            <p class="text-sm text-gray-500 mt-1">Drinks, Snacks, Fruits</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-card-border hover:shadow-xl transition duration-300 reveal">
+                            <i data-lucide="store" class="w-10 h-10 text-accent mx-auto mb-3"></i>
+                            <h4 class="text-lg font-semibold text-primary">MSHOP Shop</h4>
+                            <p class="text-sm text-gray-500 mt-1">Dryfruits, Pickles, Snacks</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="py-16 md:py-24 bg-white" id="top-selling-produce">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+                    <div class="flex justify-between items-end mb-12">
+                        <div class="reveal">
+                            <span class="text-accent font-semibold text-sm uppercase tracking-wider">*Best Products</span>
+                            <h3 class="text-4xl font-extrabold text-primary mt-2">Top Selling Produce</h3>
+                        </div>
+                        <div class="hidden sm:flex space-x-2">
+                             <button class="w-10 h-10 rounded-full border border-card-border bg-white text-gray-500 hover:text-primary hover:border-primary transition duration-300" aria-label="Previous Products">
+                                <i data-lucide="chevron-left" class="w-5 h-5 mx-auto"></i>
+                            </button>
+                             <button class="w-10 h-10 rounded-full border border-card-border bg-white text-gray-500 hover:text-primary hover:border-primary transition duration-300" aria-label="Next Products">
+                                <i data-lucide="chevron-right" class="w-5 h-5 mx-auto"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
+                        
+                        <a href="#" onclick="renderProductPage('Fresh Mango'); return false;" class="relative block h-72 rounded-xl overflow-hidden shadow-lg border border-card-border product-card-hover group reveal">
+                            <img src="https://images.unsplash.com/photo-1601493700631-2b16ec4b4716?q=80&w=1035&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Fresh Mango" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                            <span class="price-tag">$99</span>
+                            <div class="image-card-overlay">
+                                <h4 class="text-xl font-bold">Fresh Mango</h4>
+                            </div>
+                        </a>
+                        
+                        <a href="#" onclick="renderProductPage('Fresh Orange'); return false;" class="relative block h-72 rounded-xl overflow-hidden shadow-lg border border-card-border product-card-hover group reveal">
+                            <img src="https://images.unsplash.com/photo-1611080626919-7cf5a9dbab5b?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8b3JhbmdlfGVufDB8fDB8fHww" alt="Fresh Orange" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                            <span class="price-tag">$29</span>
+                            <div class="image-card-overlay">
+                                <h4 class="text-xl font-bold">Fresh Orange</h4>
+                            </div>
+                        </a>
+                        
+                        <a href="#" onclick="renderProductPage('Sweet Pineapple'); return false;" class="relative block h-72 rounded-xl overflow-hidden shadow-lg border border-card-border product-card-hover group reveal">
+                            <img src="https://images.unsplash.com/photo-1550828520-4cb496926fc9?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cGluZWFwcGxlfGVufDB8fDB8fHww"alt="Sweet Pineapple" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                            <span class="price-tag">$56</span>
+                            <div class="image-card-overlay">
+                                <h4 class="text-xl font-bold">Sweet Pineapple</h4>
+                            </div>
+                        </a>
+                        
+                        <a href="#" onclick="renderProductPage('Juicy Blueberry'); return false;" class="relative block h-72 rounded-xl overflow-hidden shadow-lg border border-card-border product-card-hover group reveal">
+                            <img src="https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Ymx1ZWJlcnJ5fGVufDB8fDB8fHww" alt="Juicy Blueberry" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                            <span class="price-tag">$19</span>
+                            <div class="image-card-overlay">
+                                <h4 class="text-xl font-bold">Juicy Blueberry</h4>
+                            </div>
+                        </a>
+                        
+                        <a href="#" onclick="renderProductPage('Healthy Lychee'); return false;" class="relative block h-72 rounded-xl overflow-hidden shadow-lg border border-card-border product-card-hover group reveal">
+                            <img src="https://plus.unsplash.com/premium_photo-1722961407854-fcc0004b4929?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bHljaGVlfGVufDB8fDB8fHww"alt="Healthy Lychee" class="w-full h-full object-cover transition duration-300 group-hover:scale-105">
+                            <span class="price-tag">$25</span>
+                            <div class="image-card-overlay">
+                                <h4 class="text-xl font-bold">Healthy Lychee</h4>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+
+    <section class="py-16 md:py-24 bg-white" id="featured-products">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-end mb-12">
+                        <div class="reveal">
+                            <span class="text-accent font-semibold text-sm uppercase tracking-wider">*Feature Products</span>
+                            <h3 class="text-4xl font-extrabold text-primary mt-2">Our Features Collection</h3>
+                        </div>
+                        <div class="hidden sm:flex space-x-2 reveal">
+                            <button class="px-5 py-2 text-sm font-semibold rounded-full bg-accent text-white shadow-md">New Arrivals</button>
+<button onclick="navigateTo('best-sellers');" class="px-5 py-2 text-sm font-medium rounded-full bg-white text-primary border border-card-border hover:bg-gray-50 transition">Best Sellers</button>
+<button onclick="navigateTo('top-rated');" class="px-5 py-2 text-sm font-medium rounded-full bg-white text-primary border border-card-border hover:bg-gray-50 transition">Top Rated</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                        <div id="product-card-1" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal">
+                            <div class="relative p-4">
+                                <img src="https://images.unsplash.com/photo-1561136594-7f68413baa99?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fHRvbWF0b3xlbnwwfHwwfHx8MA%3D%3D"
+                                    alt="Organic Tomato"
+                                    class="w-full h-auto object-cover aspect-[4/3] transition duration-300">
+                                <span class="absolute top-6 left-6 bg-accent text-white text-xs font-semibold px-3 py-1 rounded-full">NEW</span>
+                                <button onclick="toggleWishlist(1)" class="absolute top-6 right-6 text-gray-400 hover:text-secondary-accent transition" aria-label="Add to Wishlist">
+                                    <i data-lucide="heart" class="w-5 h-5 wishlist-icon"></i>
+                                </button>
+                            </div>
+                            <div class="p-4 text-center">
+                                <p class="text-xs text-gray-500 uppercase">Vegetables</p>
+                                <h4 class="text-lg font-semibold text-primary truncate mt-1">Organic Tomato</h4>
+                                <div class="flex justify-center items-center mt-2">
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                                </div>
+                                <p class="text-xl font-bold text-primary mt-2">
+                                    <span class="text-gray-500 line-through text-sm mr-2">$2</span>
+                                    $1.50 
+                                    <span class="text-sm text-gray-500 font-normal">/ 500g</span>
+                                </p>
+                                <button onclick="addToCart('Organic Tomato', 1.50)" class="mt-4 text-sm text-white bg-accent py-2 px-4 rounded-full hover:bg-primary transition duration-150 w-full flex items-center justify-center space-x-2">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="product-card-2" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal">
+                            <div class="relative p-4">
+                                <img src="https://images.unsplash.com/photo-1723810330043-dd05647294cb?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y29yaWFuZGVyfGVufDB8fDB8fHww"
+                                    alt="Green Leaves Coriander"
+                                    class="w-full h-auto object-cover aspect-[4/3] transition duration-300">
+                                <span class="absolute top-6 left-6 bg-secondary-accent text-white text-xs font-semibold px-3 py-1 rounded-full">SALE</span>
+                                <button onclick="toggleWishlist(2)" class="absolute top-6 right-6 text-gray-400 hover:text-secondary-accent transition" aria-label="Add to Wishlist">
+                                    <i data-lucide="heart" class="w-5 h-5 wishlist-icon"></i>
+                                </button>
+                            </div>
+                            <div class="p-4 text-center">
+                                <p class="text-xs text-gray-500 uppercase">Vegetables</p>
+                                <h4 class="text-lg font-semibold text-primary truncate mt-1">Green Leaves Coriander</h4>
+                                <div class="flex justify-center items-center mt-2">
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                                </div>
+                                <p class="text-xl font-bold text-primary mt-2">
+                                    <span class="text-gray-500 line-through text-sm mr-2">$10</span>
+                                    $5.00 
+                                    <span class="text-sm text-gray-500 font-normal">/ 100g</span>
+                                </p>
+                                <button onclick="addToCart('Green Leaves Coriander', 5.00)" class="mt-4 text-sm text-white bg-accent py-2 px-4 rounded-full hover:bg-primary transition duration-150 w-full flex items-center justify-center space-x-2">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="product-card-3" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal">
+                            <div class="relative p-4">
+                                <img src="https://plus.unsplash.com/premium_photo-1675731118517-c85b8cd0904c?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cmFzYmVycnl8ZW58MHx8MHx8fDA%3D"
+                                    alt="Fresh Raspberry"
+                                    class="w-full h-auto object-cover aspect-[4/3] transition duration-300">
+                                <button onclick="toggleWishlist(3)" class="absolute top-6 right-6 text-gray-400 hover:text-secondary-accent transition" aria-label="Add to Wishlist">
+                                    <i data-lucide="heart" class="w-5 h-5 wishlist-icon"></i>
+                                </button>
+                            </div>
+                            <div class="p-4 text-center">
+                                <p class="text-xs text-gray-500 uppercase">Fruit</p>
+                                <h4 class="text-lg font-semibold text-primary truncate mt-1">Fresh Raspberry</h4>
+                                <div class="flex justify-center items-center mt-2">
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                </div>
+                                <p class="text-xl font-bold text-primary mt-2">
+                                    <span class="text-gray-500 line-through text-sm mr-2">$22</span>
+                                    $18.00 
+                                    <span class="text-sm text-gray-500 font-normal">/ 1kg</span>
+                                </p>
+                                <button onclick="addToCart('Fresh Raspberry', 18.00)" class="mt-4 text-sm text-white bg-accent py-2 px-4 rounded-full hover:bg-primary transition duration-150 w-full flex items-center justify-center space-x-2">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="product-card-4" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal">
+                            <div class="relative p-4">
+                                <img src="https://images.unsplash.com/photo-1664289242854-e99d345cfa92?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG9rcmF8ZW58MHx8MHx8fDA%3D"
+                                    alt="Organic Okra"
+                                    class="w-full h-auto object-cover aspect-[4/3] transition duration-300">
+                                <span class="absolute top-6 left-6 bg-accent text-white text-xs font-semibold px-3 py-1 rounded-full">HOT</span>
+                                <button onclick="toggleWishlist(4)" class="absolute top-6 right-6 text-gray-400 hover:text-secondary-accent transition" aria-label="Add to Wishlist">
+                                    <i data-lucide="heart" class="w-5 h-5 wishlist-icon"></i>
+                                </button>
+                            </div>
+                            <div class="p-4 text-center">
+                                <p class="text-xs text-gray-500 uppercase">Vegetable</p>
+                                <h4 class="text-lg font-semibold text-primary truncate mt-1">Organic Okra</h4>
+                                <div class="flex justify-center items-center mt-2">
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                                </div>
+                                <p class="text-xl font-bold text-primary mt-2">
+                                    <span class="text-gray-500 line-through text-sm mr-2">$25</span>
+                                    $20.00 
+                                    <span class="text-sm text-gray-500 font-normal">/ 2kg</span>
+                                </p>
+                                <button onclick="addToCart('Organic Okra', 20.00)" class="mt-4 text-sm text-white bg-accent py-2 px-4 rounded-full hover:bg-primary transition duration-150 w-full flex items-center justify-center space-x-2">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </section>
+
+    <!-- New Arrivals in Wholesale (Horizontal Scroll Carousel) -->
+    <section class="py-16 md:py-24 bg-white reveal" id="new-arrivals-wholesale">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-3xl font-extrabold text-primary">New Arrivals in Wholesale</h2>
+                <a href="#category-electronics" onclick="navigateTo('category','electronics'); return false;" class="text-accent hover:text-primary transition">Browse All</a>
+            </div>
+            <div id="new-arrivals-container" class="flex overflow-x-auto scroll-smooth pb-2">
+                <div class="flex gap-4 min-w-full snap-x snap-mandatory" id="new-arrivals-cards"><!-- JS injects product cards here --></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bulk Buy & Save Deals (Promo Banner with offer cards) -->
+    <section class="py-16 md:py-24 bg-light-bg reveal" id="bulk-buy-save">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-6">
+                <h2 class="text-3xl font-extrabold text-primary">Bulk Buy & Save</h2>
+                <p class="text-gray-600">Unlock wholesale savings with tiered discounts and bundle pricing.</p>
+            </div>
+            <div id="bulk-deals-container" class="p-6 rounded-xl border border-card-border bg-white">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-6" id="bulk-deals-cards"><!-- JS injects offer cards here --></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommended for Your Store (Grid of 8 products) -->
+    <section class="py-16 md:py-24 bg-white reveal" id="recommended-store">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-6 flex items-center justify-between">
+                <h2 class="text-3xl font-extrabold text-primary">Recommended for Your Store</h2>
+                <span class="text-sm text-gray-500">Based on simulated margin and trends</span>
+            </div>
+            <div id="recommended-container" class="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-6"><!-- JS injects product cards here --></div>
+        </div>
+    </section>
+
+    <!-- Product Category Highlights (Two large image cards) -->
+    <section class="py-16 md:py-24 bg-light-bg reveal" id="category-highlights">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-6">
+                <h2 class="text-3xl font-extrabold text-primary">Category Highlights</h2>
+                <p class="text-gray-600">Explore top departments quickly.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6" id="category-highlights-container">
+                <!-- JS will inject two large image cards for Electronics and Fashion -->
+            </div>
+        </div>
+    </section>
+            
+    <section class="py-16 md:py-24 bg-light-bg" id="promo-seasonal">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+                    <div class="bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col lg:flex-row border border-card-border">
+                        <div class="lg:w-1/2 h-64 lg:h-auto relative overflow-hidden">
+                            <div role="img" aria-label="Seasonal products collage placeholder" class="w-full h-full transition duration-500" style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 50%, #d1d5db 100%);"></div>
+                        </div>
+                        <div class="lg:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                            <span class="text-secondary-accent font-semibold text-sm uppercase tracking-widest">Limited Time Offer</span>
+                            <h2 class="text-3xl md:text-4xl font-extrabold text-primary mt-2 mb-4">
+                                Huge Seasonal Savings Event is Live!
+                            </h2>
+                            <p class="text-lg text-gray-600 mb-6">
+                                Shop across all departments—from fresh produce to the latest tech—and save up to 40% this season. Don't miss out on exclusive limited-stock items.
+                            </p>
+                            <a href="#deals" onclick="navigateTo('deals'); return false;" class="inline-flex items-center space-x-2 px-8 py-3 bg-accent text-white font-semibold rounded-full hover:bg-primary transition duration-300 w-fit pulse-highlight">
+                                Shop Seasonal Deals
+                                <i data-lucide="chevrons-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="py-16 md:py-24 bg-white" id="electronics-focus">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex justify-between items-end mb-12">
+                        <div class="reveal">
+                            <span class="text-accent font-semibold text-sm uppercase tracking-wider">*Best in Tech</span>
+                            <h3 class="text-4xl font-extrabold text-primary mt-2">Latest Electronics Arrivals</h3>
+                        </div>
+                        <a href="#category-electronics" onclick="navigateTo('category', 'electronics'); return false;" class="hidden sm:flex px-5 py-2 text-sm font-semibold rounded-full bg-primary text-white shadow-md hover:bg-accent transition reveal">View All Tech</a>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                        <div id="product-card-5" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal">
+                            <div class="relative p-4">
+                                <img src="https://plus.unsplash.com/premium_photo-1679513691474-73102089c117?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D"
+                                    alt="Wireless Headphones"
+                                    class="w-full h-auto object-cover aspect-[4/3] transition duration-300">
+                                <span class="absolute top-6 left-6 bg-secondary-accent text-white text-xs font-semibold px-3 py-1 rounded-full">40% OFF</span>
+                                <button onclick="toggleWishlist(5)" class="absolute top-6 right-6 text-gray-400 hover:text-secondary-accent transition" aria-label="Add to Wishlist">
+                                    <i data-lucide="heart" class="w-5 h-5 wishlist-icon"></i>
+                                </button>
+                            </div>
+                            <div class="p-4 text-center">
+                                <p class="text-xs text-gray-500 uppercase">Audio</p>
+                                <h4 class="text-lg font-semibold text-primary truncate mt-1">Noise Cancelling Headphones</h4>
+                                <div class="flex justify-center items-center mt-2">
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                                </div>
+                                <p class="text-xl font-bold text-primary mt-2">
+                                    <span class="text-gray-500 line-through text-sm mr-2">$199</span>
+                                    $119.99 
+                                </p>
+                                <button onclick="addToCart('Noise Cancelling Headphones', 119.99)" class="mt-4 text-sm text-white bg-accent py-2 px-4 rounded-full hover:bg-primary transition duration-150 w-full flex items-center justify-center space-x-2">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="product-card-6" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal">
+                            <div class="relative p-4">
+                                <img src="https://plus.unsplash.com/premium_photo-1728759436968-db4b52249ffa?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8d2F0Y2h8ZW58MHx8MHx8fDA%3D"
+                                    alt="Smartwatch"
+                                    class="w-full h-auto object-cover aspect-[4/3] transition duration-300">
+                                <span class="absolute top-6 left-6 bg-accent text-white text-xs font-semibold px-3 py-1 rounded-full">NEW</span>
+                                <button onclick="toggleWishlist(6)" class="absolute top-6 right-6 text-gray-400 hover:text-secondary-accent transition" aria-label="Add to Wishlist">
+                                    <i data-lucide="heart" class="w-5 h-5 wishlist-icon"></i>
+                                </button>
+                            </div>
+                            <div class="p-4 text-center">
+                                <p class="text-xs text-gray-500 uppercase">Wearables</p>
+                                <h4 class="text-lg font-semibold text-primary truncate mt-1">Sport Fitness Tracker Watch</h4>
+                                <div class="flex justify-center items-center mt-2">
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                </div>
+                                <p class="text-xl font-bold text-primary mt-2">$89.00</p>
+                                <button onclick="addToCart('Sport Fitness Tracker Watch', 89.00)" class="mt-4 text-sm text-white bg-accent py-2 px-4 rounded-full hover:bg-primary transition duration-150 w-full flex items-center justify-center space-x-2">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="product-card-7" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal">
+                            <div class="relative p-4">
+                                <img src="https://images.unsplash.com/photo-1659543038858-9673fc324a89?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHNzZHxlbnwwfHwwfHx8MA%3D%3D"
+                                    alt="Portable SSD"
+                                    class="w-full h-auto object-cover aspect-[4/3] transition duration-300">
+                                <button onclick="toggleWishlist(7)" class="absolute top-6 right-6 text-gray-400 hover:text-secondary-accent transition" aria-label="Add to Wishlist">
+                                    <i data-lucide="heart" class="w-5 h-5 wishlist-icon"></i>
+                                </button>
+                            </div>
+                            <div class="p-4 text-center">
+                                <p class="text-xs text-gray-500 uppercase">Storage</p>
+                                <h4 class="text-lg font-semibold text-primary truncate mt-1">1TB Portable External SSD</h4>
+                                <div class="flex justify-center items-center mt-2">
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                                    <i data-lucide="star" class="w-4 h-4 text-gray-300"></i>
+                                </div>
+                                <p class="text-xl font-bold text-primary mt-2">$149.99</p>
+                                <button onclick="addToCart('1TB Portable External SSD', 149.99)" class="mt-4 text-sm text-white bg-accent py-2 px-4 rounded-full hover:bg-primary transition duration-150 w-full flex items-center justify-center space-x-2">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="product-card-8" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal">
+                            <div class="relative p-4">
+                                <img src="https://plus.unsplash.com/premium_photo-1664194583917-b0ba07c4ce2a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8a2V5Ym9hcmR8ZW58MHx8MHx8fDA%3D"
+                                    alt="Mechanical Keyboard"
+                                    class="w-full h-auto object-cover aspect-[4/3] transition duration-300">
+                                <button onclick="toggleWishlist(8)" class="absolute top-6 right-6 text-gray-400 hover:text-secondary-accent transition" aria-label="Add to Wishlist">
+                                    <i data-lucide="heart" class="w-5 h-5 wishlist-icon"></i>
+                                </button>
+                            </div>
+                            <div class="p-4 text-center">
+                                <p class="text-xs text-gray-500 uppercase">Peripherals</p>
+                                <h4 class="text-lg font-semibold text-primary truncate mt-1">Ergonomic Mechanical Keyboard</h4>
+                                <div class="flex justify-center items-center mt-2">
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                                </div>
+                                <p class="text-xl font-bold text-primary mt-2">$79.99</p>
+                                <button onclick="addToCart('Ergonomic Mechanical Keyboard', 79.99)" class="mt-4 text-sm text-white bg-accent py-2 px-4 rounded-full hover:bg-primary transition duration-150 w-full flex items-center justify-center space-x-2">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    <span>Add to Cart</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+            
+            <section class="py-16 md:py-24 bg-white" id="about-section">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-6 reveal lg:h-[400px] relative">
+                            <div id="about-image-container" class="w-full">
+                                
+                                <img src="https://images.unsplash.com/photo-1621460249485-4e4f92c9de5d?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8ZmFybWluZ3xlbnwwfHwwfHx8MA%3D%3D"
+                                    alt="Farmer in field ensuring quality" 
+                                    class="about-image about-image-1">
+
+                                <img src="https://plus.unsplash.com/premium_photo-1664702603027-8fd47b8d341a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8c2hvcHBlcnxlbnwwfHwwfHx8MA%3D%3D" 
+                                    alt="Satisfied shopper in retail store" 
+                                    class="about-image about-image-2">
+
+                                <div class="about-badge bg-accent text-white p-4 md:p-6 rounded-xl shadow-lg transform rotate-[-5deg] hover:rotate-[0deg] transition duration-300">
+                                    <h4 class="text-3xl font-extrabold">15+</h4>
+                                    <p class="text-sm">Years Experience</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-8 reveal">
+                            <p class="text-sm text-accent uppercase font-semibold">About Our Company</p>
+                            <h2 class="text-4xl font-extrabold text-primary">We Provide Cost Effective Solutions For You</h2>
+                            <p class="text-gray-600">It is a long established fact that a reader will be distracted the readable content of a page when looking at layout the point of using lorem the is ipsum less normal distribution of letters.</p>
+                            
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-4">
+                                    <i data-lucide="globe" class="w-6 h-6 text-accent flex-shrink-0 mt-1"></i>
+                                    <div>
+                                        <h4 class="font-semibold text-primary">Worldwide Services</h4>
+                                        <p class="text-sm text-gray-500">It is a long established fact that a reader will be distracted the readable content of a page when looking at layout the point of using lorem.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-4">
+                                    <i data-lucide="trophy" class="w-6 h-6 text-accent flex-shrink-0 mt-1"></i>
+                                    <div>
+                                        <h4 class="font-semibold text-primary">Best Company Award Winner</h4>
+                                        <p class="text-sm text-gray-500">It is a long established fact that a reader will be distracted the readable content of a page when looking at layout the point of using lorem.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a href="#" class="inline-flex items-center space-x-2 px-6 py-3 bg-primary text-white font-semibold rounded-full hover:bg-accent transition duration-300">
+                                <span>Read More</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="py-16 md:py-24 bg-light-bg" id="newsletter">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+                    <span class="text-accent font-semibold text-sm uppercase tracking-wider">*Subscribe Now: Get Exclusive Updates and Content!</span>
+                    <h2 class="text-4xl font-extrabold text-primary mb-8 mt-2">
+                        Stay Updated: Subscribe For Exclusive Content
+                    </h2>
+                    <form class="max-w-lg mx-auto flex flex-col sm:flex-row gap-4">
+                        <input type="email" placeholder="Enter your email" required
+                            class="flex-grow px-5 py-3 border border-card-border rounded-lg focus:ring-accent focus:border-accent shadow-inner transition duration-300">
+                        <button type="submit" class="px-8 py-3 bg-accent text-white font-medium rounded-lg shadow-lg hover:bg-primary btn-primary sm:w-auto w-full">
+                            Subscribe
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </section>
+
+        <section id="category-page" class="hidden min-h-[60vh] py-16 bg-background">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div id="category-banner-container" class="mb-10 reveal">
+                    </div>
+
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <aside id="category-sidebar" class="lg:w-1/4 p-6 bg-white rounded-xl shadow-lg border border-card-border sticky top-24 h-fit reveal">
+                        </aside>
+
+                    <div class="lg:w-3/4">
+                        <div id="category-page-header" class="mb-6 pb-4 border-b border-card-border">
+                            </div>
+                        <div id="category-products-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="deals-page" class="hidden min-h-[60vh] py-16 bg-light-bg">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-secondary-accent text-white p-8 md:p-12 rounded-xl shadow-2xl mb-10 reveal">
+                    <div class="flex flex-col lg:flex-row justify-between items-center space-y-6 lg:space-y-0">
+                        <div class="text-center lg:text-left">
+                            <h1 class="text-4xl md:text-5xl font-extrabold mb-2">Limited-Time Flash Deals</h1>
+                            <p class="text-xl opacity-90">Hurry! Massive savings with bulk pricing—while stocks last.</p>
+                        </div>
+                        
+                        <div class="flex space-x-4">
+                            <div class="time-box flex flex-col items-center">
+                                <span id="days">00</span>
+                                <span class="text-sm font-light uppercase">Days</span>
+                            </div>
+                            <div class="time-box flex flex-col items-center">
+                                <span id="hours">00</span>
+                                <span class="text-sm font-light uppercase">Hours</span>
+                            </div>
+                            <div class="time-box flex flex-col items-center">
+                                <span id="minutes">00</span>
+                                <span class="text-sm font-light uppercase">Mins</span>
+                            </div>
+                            <div class="time-box flex flex-col items-center">
+                                <span id="seconds">00</span>
+                                <span class="text-sm font-light uppercase">Secs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <aside id="deals-sidebar" class="lg:w-1/4 p-6 bg-white rounded-xl shadow-lg border border-card-border sticky top-24 h-fit reveal">
+                        </aside>
+
+                    <div class="lg:w-3/4">
+                        <div id="deals-page-header" class="mb-6 pb-4 border-b border-card-border">
+                            <h2 class="text-3xl font-bold text-primary">All Sale Items</h2>
+                        </div>
+                        <div id="deals-products-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                            </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        
+        <section id="product-detail-section" class="hidden min-h-[60vh] py-16 bg-background">
+             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                 <button onclick="navigateTo('home');" class="text-accent hover:text-primary transition duration-150 font-medium flex items-center mb-6">
+                    <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Back to Shopping
+                 </button>
+                 <div id="pdp-content-container" class="bg-white p-8 md:p-12 rounded-xl shadow-2xl border border-card-border">
+                    <h1 class="text-4xl font-extrabold text-gray-400">Select a product to view details.</h1>
+                 </div>
+            </div>
+        </section>
+
+
+        <section id="account-page" class="hidden min-h-[70vh] py-16 bg-background">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-extrabold text-primary mb-10 border-b pb-4">
+                    My Account Dashboard
+                </h2>
+
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <nav class="lg:w-1/4 p-4 bg-white rounded-xl shadow-lg border border-card-border sticky top-24 h-fit reveal">
+                        <p class="text-sm text-gray-500 mb-4 uppercase tracking-wider">Navigation</p>
+                        <div class="space-y-2 text-primary text-lg">
+                            <div id="nav-dashboard" class="account-nav-item active" onclick="setAccountView('dashboard')">
+                                <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                            </div>
+                            <div id="nav-orders" class="account-nav-item" onclick="setAccountView('orders')">
+                                <i data-lucide="package" class="w-5 h-5"></i> My Orders
+                            </div>
+                            <div id="nav-profile" class="account-nav-item" onclick="setAccountView('profile')">
+                                <i data-lucide="user-cog" class="w-5 h-5"></i> Profile Settings
+                            </div>
+                            <div id="nav-address" class="account-nav-item" onclick="setAccountView('address')">
+                                <i data-lucide="map-pin" class="w-5 h-5"></i> Address Book
+                            </div>
+                            <div id="nav-payment" class="account-nav-item" onclick="setAccountView('payment')">
+                                <i data-lucide="credit-card" class="w-5 h-5"></i> Payment Methods
+                            </div>
+                            <div id="nav-wishlist-account" class="account-nav-item" onclick="setAccountView('wishlist')">
+                                <i data-lucide="heart" class="w-5 h-5"></i> My Wishlist
+                            </div>
+                            
+                            <hr class="border-t border-card-border my-2">
+                            
+                            <div id="nav-logout" class="account-nav-item text-secondary-accent hover:bg-secondary-accent/10 hover:text-red-700" onclick="logoutUser()">
+                                <i data-lucide="log-out" class="w-5 h-5"></i> Logout
+                            </div>
+                        </div>
+                    </nav>
+
+                    <div class="lg:w-3/4">
+                        <div id="account-content" class="p-8 bg-white rounded-xl shadow-xl border border-card-border min-h-[500px]">
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="cart-page" class="hidden min-h-[60vh] py-16 bg-background">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-4xl font-extrabold text-primary mb-10 border-b pb-4">
+                    Your Shopping Cart
+                </h2>
+
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div class="lg:w-2/3">
+                        <div id="cart-items-container" class="space-y-4">
+                            <div id="empty-cart-message" class="text-center py-16 bg-white rounded-xl shadow-lg border border-card-border">
+                                <i data-lucide="shopping-cart" class="w-12 h-12 text-gray-400 mx-auto mb-4"></i>
+                                <p class="text-xl font-semibold text-gray-600">Your cart is empty.</p>
+                                <button onclick="navigateTo('home')" class="mt-4 text-accent hover:text-primary transition duration-150 font-medium flex items-center mx-auto">
+                                    <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i> Continue Shopping
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:w-1/3 sticky top-24">
+                        <div class="bg-white p-6 rounded-xl shadow-2xl border border-card-border reveal">
+                            <h3 class="text-2xl font-bold text-primary mb-5 border-b pb-3">Order Summary</h3>
+                            
+                            <div class="space-y-3 text-gray-700">
+                                <div class="flex justify-between">
+                                    <span>Subtotal (<span id="summary-item-count">0</span> items)</span>
+                                    <span id="summary-subtotal" class="font-medium">$0.00</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Shipping Estimate</span>
+                                    <span id="summary-shipping" class="font-medium text-green-600">FREE</span>
+                                </div>
+                                <div class="flex justify-between pb-3 border-b border-card-border">
+                                    <span>Taxes (Estimated)</span>
+                                    <span id="summary-taxes" class="font-medium">$0.00</span>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-between pt-4 text-xl font-bold text-primary">
+                                <span>Order Total</span>
+                                <span id="summary-total">$0.00</span>
+                            </div>
+
+                            <button class="w-full mt-6 py-3 bg-secondary-accent text-white font-semibold rounded-full shadow-lg hover:bg-red-500 transition duration-300">
+                                Proceed to Checkout
+                            </button>
+
+                            <button onclick="navigateTo('home')" class="w-full mt-3 py-2 text-primary hover:text-accent transition duration-300 text-sm font-medium">
+                                Continue Shopping
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-footer-bg-light py-12 text-primary">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8 border-b border-gray-300 pb-8 mb-8">
+                <div class="col-span-2 md:col-span-1">
+                    <a href="#" class="text-2xl font-black text-primary tracking-widest uppercase">
+                        M<span class="text-accent">SHOP</span>
+                    </a>
+                    <p class="text-sm text-gray-600 mt-3">The MSHOP is the biggest market of grocery products. Get your daily needs from our store.</p>
+                </div>
+
+                <div>
+                    <h5 class="font-bold mb-3 text-primary uppercase text-base">Category</h5>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#category-dairy" onclick="navigateTo('category', 'dairy'); return false;" class="hover:text-accent transition duration-150">Dairy & Milk</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Snack & Spice</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Fast Food</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Juice & Drinks</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Seafood</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="font-bold mb-3 text-primary uppercase text-base">Company</h5>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-accent transition duration-150">About us</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Delivery</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Legal Notice</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Terms & conditions</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Secure payment</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Contact us</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5 class="font-bold mb-3 text-primary uppercase text-base">Account</h5>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#account" onclick="navigateTo('account', 'dashboard'); return false;" class="hover:text-accent transition duration-150">Sign In</a></li>
+                        <li><a href="#cart" onclick="navigateTo('cart'); return false;" class="hover:text-accent transition duration-150">View Cart</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Return Policy</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Become a Vendor</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Affiliate Program</a></li>
+                        <li><a href="#" class="hover:text-accent transition duration-150">Payments</a></li>
+                    </ul>
+                </div>
+
+                <div class="md:col-span-1 col-span-2">
+                    <h5 class="font-bold mb-3 text-primary uppercase text-base">Contact</h5>
+                    <ul class="space-y-3 text-sm text-gray-600">
+                        <li class="flex items-start space-x-2">
+                            <i data-lucide="map-pin" class="w-4 h-4 mt-1 flex-shrink-0"></i>
+                            <span>1234 Elm Street Springfield Avenue, Brooklyn, USA.</span>
+                        </li>
+                         <li class="flex items-start space-x-2">
+                            <i data-lucide="phone" class="w-4 h-4 mt-1 flex-shrink-0"></i>
+                            <span>+00 9876543210</span>
+                        </li>
+                         <li class="flex items-start space-x-2">
+                            <i data-lucide="mail" class="w-4 h-4 mt-1 flex-shrink-0"></i>
+                            <span>example@email.com</span>
+                        </li>
+                    </ul>
+                    <div class="flex space-x-3 mt-4">
+                        <a href="#" class="text-primary hover:text-accent transition duration-150 border border-primary p-2 rounded-full" aria-label="Facebook"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-primary hover:text-accent transition duration-150 border border-primary p-2 rounded-full" aria-label="Twitter"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-primary hover:text-accent transition duration-150 border border-primary p-2 rounded-full" aria-label="LinkedIn"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+                        <a href="#" class="text-primary hover:text-accent transition duration-150 border border-primary p-2 rounded-full" aria-label="Instagram"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center md:flex md:justify-between text-sm text-gray-500">
+                <p>&copy; 2025 MSHOP Retailer. All rights reserved.</p>
+                <div class="mt-2 md:mt-0">
+                    <a href="#" class="hover:text-primary">Privacy Policy</a> |
+                    <a href="#" class="hover:text-primary">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast-notification" class="fixed bottom-6 left-6 z-[110] p-4 max-w-sm w-full bg-accent text-white rounded-lg shadow-2xl flex items-center space-x-3 hidden toast-enter" role="alert" aria-live="assertive">
+        <i data-lucide="check-circle" class="w-6 h-6 flex-shrink-0"></i>
+        <div class="flex-grow">
+            <p class="font-semibold text-sm">Item Added to Cart!</p>
+            <p id="toast-product-name" class="text-xs opacity-90 truncate"></p>
+        </div>
+        <a href="#cart" onclick="navigateTo('cart')" class="text-xs font-bold underline hover:text-gray-100 flex-shrink-0">VIEW CART</a>
+    </div>
+    
+    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-40 z-[120] hidden flex items-center justify-center p-4 transition-opacity duration-300 opacity-0" aria-modal="true" role="dialog">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-6 transform translate-y-4 transition-transform duration-300">
+            <div class="flex items-center space-x-4 mb-4">
+                <i data-lucide="alert-triangle" class="w-8 h-8 text-secondary-accent"></i>
+                <h3 class="text-xl font-bold text-primary">Confirm Logout</h3>
+            </div>
+            <p class="text-gray-600 mb-6">Are you sure you want to log out of your account?</p>
+            <div class="flex justify-end space-x-3">
+                <button onclick="hideLogoutModal()" class="px-5 py-2 bg-gray-200 text-primary font-semibold rounded-full hover:bg-gray-300 transition">
+                    Cancel
+                </button>
+                <button onclick="confirmLogout()" class="px-5 py-2 bg-secondary-accent text-white font-semibold rounded-full hover:bg-red-600 transition">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+</immersive>
