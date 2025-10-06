@@ -3,6 +3,19 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: #F9FAFB; /* Use light background */
     scroll-behavior: smooth;
+    overflow-x: hidden; /* Prevents horizontal scroll from pushing the page wide */
+}
+
+/* Ensures all content containers are constrained */
+.max-w-7xl {
+    max-width: 100% !important; /* Temporarily relax max-width constraint for debugging */
+}
+
+/* Ensure New Arrivals container has proper width and overflow handling */
+#new-arrivals-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 /* Custom subtle hover animation for cards - Adjusted for lighter look */
