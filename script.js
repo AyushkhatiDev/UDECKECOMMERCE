@@ -988,38 +988,42 @@ function renderNewHomepageSections() {
         const margin = p.marginPercent || 30;
         const colorHex = (p.imageColor ? `#${p.imageColor}` : '#e5e7eb');
         const imageMarkup = p.imageUrl
-            ? `<img src="${p.imageUrl}" alt="${p.name}" class="w-full aspect-[1/1] object-cover bg-white transition duration-300" onerror="this.onerror=null; this.outerHTML='<div class=&quot;w-full aspect-[1/1] bg-white&quot;></div>'" />`
-            : `<div class="w-full aspect-[1/1] bg-white"></div>`;
+            ? `<div class="w-full h-48 overflow-hidden bg-white flex items-center justify-center">
+                   <img src="${p.imageUrl}" alt="${p.name}" class="w-full h-full object-cover transition duration-300" onerror="this.onerror=null; this.outerHTML='<div class=&quot;w-full h-full bg-gray-200&quot;></div>'" />
+               </div>`
+            : `<div class="w-full h-48 bg-gray-200"></div>`;
         const initialQty = 1;
         const unitTotal = calculateBulkPrice(p, initialQty);
         const unitPrice = +(unitTotal / initialQty).toFixed(2);
         return `
-        <div id="product-card-${p.id}" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal flex flex-col justify-between h-[420px]" style="transition-delay: ${i * 80}ms">
-            <div class="relative p-4">
+        <div id="product-card-${p.id}" class="bg-white rounded-xl shadow-lg overflow-hidden product-card-hover border border-card-border reveal flex flex-col h-[420px]" style="transition-delay: ${i * 80}ms">
+            <div class="relative">
                 <a href="#pdp-${p.id}" onclick="renderProductPage('${p.name}'); return false;">
                     ${imageMarkup}
                 </a>
-                <span class="absolute -top-2 right-2 bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-sm text-[10px] font-medium">${margin}%</span>
-                <button onclick="toggleWishlist(${p.id})" class="absolute top-3 left-3 text-gray-400 hover:text-secondary-accent transition ${wishlistItems.includes(p.id) ? 'wishlist-active' : ''}" aria-label="Add to Wishlist">
+                <span class="absolute top-2 right-2 bg-gray-100 text-gray-600 text-xs px-1.5 py-0.5 rounded-sm text-[10px] font-medium">${margin}%</span>
+                <button onclick="toggleWishlist(${p.id})" class="absolute top-2 left-2 text-gray-400 hover:text-secondary-accent transition ${wishlistItems.includes(p.id) ? 'wishlist-active' : ''}" aria-label="Add to Wishlist">
                     <i data-lucide="heart" class="w-5 h-5 wishlist-icon"></i>
                 </button>
             </div>
-            <div class="p-4 flex flex-col">
-                <h4 class="text-lg font-semibold text-primary truncate-2-lines">${p.name}</h4>
-                <div class="flex items-baseline space-x-2 mt-2">
-                    <span id="rec-price-${p.id}" class="text-primary font-bold">${formatCurrency(unitPrice)}</span>
-                    ${p.unit ? `<span class="text-gray-500">/ ${p.unit}</span>` : ''}
-                </div>
-                <div class="flex items-center mt-2">
-                    ${generateStarRating(p.rating || 0)}
-                </div>
-                <div class="mt-auto flex items-center justify-between gap-3 action-bar-fixed-height h-10">
-                    <div class="flex items-center border border-card-border rounded-full overflow-hidden w-36 h-full">
-                        <button onclick="decRecommendedQty(${p.id}); return false;" class="px-3 h-full text-primary hover:text-secondary-accent">-</button>
-                        <input id="rec-qty-input-${p.id}" type="number" min="1" value="1" class="w-16 text-center outline-none h-full" oninput="onRecommendedQtyChange(${p.id}, this.value)" />
-                        <button onclick="incRecommendedQty(${p.id}); return false;" class="px-3 h-full text-primary hover:text-secondary-accent">+</button>
+            <div class="p-4 flex flex-col flex-1 justify-between">
+                <div class="flex-1 min-h-[100px] flex flex-col justify-start">
+                    <h4 class="text-lg font-semibold text-primary truncate-2-lines">${p.name}</h4>
+                    <div class="flex items-baseline space-x-2 mt-2">
+                        <span id="rec-price-${p.id}" class="text-primary font-bold">${formatCurrency(unitPrice)}</span>
+                        ${p.unit ? `<span class="text-gray-500">/ ${p.unit}</span>` : ''}
                     </div>
-                    <button onclick="addBulkToCart(${p.id}); return false;" class="flex-1 px-4 h-full bg-accent text-white rounded-lg hover:bg-primary transition">Add to Cart</button>
+                    <div class="flex items-center mt-2">
+                        ${generateStarRating(p.rating || 0)}
+                    </div>
+                </div>
+                <div class="flex items-center justify-between gap-3 h-10 mt-3">
+                    <div class="flex items-center border border-card-border rounded-full overflow-hidden w-36 h-full">
+                        <button onclick="decRecommendedQty(${p.id}); return false;" class="px-3 h-full text-primary hover:text-secondary-accent flex items-center justify-center">-</button>
+                        <input id="rec-qty-input-${p.id}" type="number" min="1" value="1" class="w-16 text-center outline-none h-full text-sm" oninput="onRecommendedQtyChange(${p.id}, this.value)" />
+                        <button onclick="incRecommendedQty(${p.id}); return false;" class="px-3 h-full text-primary hover:text-secondary-accent flex items-center justify-center">+</button>
+                    </div>
+                    <button onclick="addBulkToCart(${p.id}); return false;" class="flex-1 px-4 h-full bg-accent text-white rounded-lg hover:bg-primary transition flex items-center justify-center">Add to Cart</button>
                 </div>
             </div>
         </div>`;
