@@ -391,7 +391,7 @@ function renderCart() {
     const itemCards = cartItems.map(item => {
         const colorHex = (item.imageColor ? `#${item.imageColor}` : '#e5e7eb');
         const imageMarkup = item.imageUrl
-            ? `<img src="${item.imageUrl}" alt="${item.name}" class="w-20 h-20 object-cover rounded-lg" onerror="this.onerror=null; this.outerHTML='\x3cdiv class=\x22w-20 h-20 rounded-lg\x22 style=\x22background-color:${colorHex}\x22\x3e\x3c/div\x3e'" />`
+            ? `<img src="${item.imageUrl}" alt="${item.name}" class="w-20 h-20 object-cover rounded-lg" onerror="this.onerror=null; this.outerHTML='<div class=&quot;w-20 h-20 rounded-lg&quot; style=&quot;background-color:${colorHex}&quot;></div>'" />`
             : `<div class="w-20 h-20 rounded-lg" style="background-color:${colorHex}"></div>`;
         const subtotal = +(item.price * item.quantity).toFixed(2);
         return `
@@ -492,7 +492,272 @@ function addToCartFromPDP(productName, price) {
     addToCart(product.id, quantity);
 }
 
-// ... (Rest of Account Management Functions: showLogoutModal, hideLogoutModal, logoutUser, confirmLogout, setAccountView) ...
+// Account Management Functions
+function viewWishlist() {
+    navigateTo('account', 'wishlist');
+}
+
+function setAccountView(view) {
+    currentAccountView = view;
+    
+    // Remove active class from all nav items
+    const navItems = document.querySelectorAll('.account-nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    
+    // Add active class to current nav item
+    const currentNavItem = document.getElementById(`nav-${view}`);
+    if (currentNavItem) {
+        currentNavItem.classList.add('active');
+    }
+    
+    // Hide all account content sections
+    const contentSections = document.querySelectorAll('[id^="account-content-"]');
+    contentSections.forEach(section => section.classList.add('hidden'));
+    
+    // Show the selected content section
+    const targetSection = document.getElementById(`account-content-${view}`);
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
+    }
+    
+    // Handle specific view logic
+    switch(view) {
+        case 'wishlist':
+            renderAccountWishlist();
+            break;
+        case 'orders':
+            renderAccountOrders();
+            break;
+        case 'profile':
+            renderAccountProfile();
+            break;
+        case 'address':
+            renderAccountAddress();
+            break;
+        case 'payment':
+            renderAccountPayment();
+            break;
+        case 'dashboard':
+        default:
+            renderAccountDashboard();
+            break;
+    }
+}
+
+function renderAccountWishlist() {
+    const container = document.getElementById('account-content-wishlist');
+    if (!container) return;
+    
+    if (wishlistItems.length === 0) {
+        container.innerHTML = `
+            <div class="text-center py-12">
+                <i data-lucide="heart" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                <h3 class="text-xl font-semibold text-gray-600 mb-2">Your wishlist is empty</h3>
+                <p class="text-gray-500 mb-6">Add items you love to your wishlist</p>
+                <a href="#" onclick="navigateTo('home')" class="bg-accent text-white px-6 py-2 rounded-lg hover:bg-accent-dark transition duration-150">
+                    Continue Shopping
+                </a>
+            </div>
+        `;
+    } else {
+        const wishlistHTML = wishlistItems.map(item => {
+            const product = findProductById(item.id);
+            if (!product) return '';
+            
+            return `
+                <div class="bg-white rounded-lg shadow-sm border p-4 flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
+                        ${product.imageUrl ? 
+                            `<img src="${product.imageUrl}" alt="${product.name}" class="w-full h-full object-cover">` :
+                            `<div class="w-full h-full" style="background-color: #${product.imageColor}"></div>`
+                        }
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-gray-800">${product.name}</h4>
+                        <p class="text-accent font-bold">${formatCurrency(product.price)}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="addToCart(${product.id})" class="bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-dark transition duration-150">
+                            Add to Cart
+                        </button>
+                        <button onclick="toggleWishlist(${product.id})" class="text-red-500 hover:text-red-700 p-2">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = `
+            <div class="space-y-4">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">My Wishlist (${wishlistItems.length} items)</h3>
+                ${wishlistHTML}
+            </div>
+        `;
+    }
+}
+
+function renderAccountDashboard() {
+    const container = document.getElementById('account-content-dashboard');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="space-y-6">
+            <h3 class="text-xl font-semibold text-gray-800">Account Dashboard</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="shopping-bag" class="w-8 h-8 text-accent"></i>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Total Orders</h4>
+                            <p class="text-2xl font-bold text-accent">0</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">No orders yet</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="heart" class="w-8 h-8 text-red-500"></i>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Wishlist Items</h4>
+                            <p class="text-2xl font-bold text-red-500">${wishlistItems.length}</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">${wishlistItems.length === 0 ? 'No items in wishlist' : 'Items saved for later'}</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm border p-6">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <i data-lucide="shopping-cart" class="w-8 h-8 text-green-500"></i>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Cart Items</h4>
+                            <p class="text-2xl font-bold text-green-500">${cartItems.length}</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">${cartItems.length === 0 ? 'Cart is empty' : 'Items ready to checkout'}</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderAccountOrders() {
+    const container = document.getElementById('account-content-orders');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="space-y-6">
+            <h3 class="text-xl font-semibold text-gray-800">Order History</h3>
+            <div class="text-center py-12">
+                <i data-lucide="package" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                <h4 class="text-lg font-semibold text-gray-600 mb-2">No orders yet</h4>
+                <p class="text-gray-500 mb-6">When you place orders, they'll appear here</p>
+                <a href="#" onclick="navigateTo('home')" class="bg-accent text-white px-6 py-2 rounded-lg hover:bg-accent-dark transition duration-150">
+                    Start Shopping
+                </a>
+            </div>
+        </div>
+    `;
+}
+
+function renderAccountProfile() {
+    const container = document.getElementById('account-content-profile');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="space-y-6">
+            <h3 class="text-xl font-semibold text-gray-800">Profile Information</h3>
+            <div class="bg-white rounded-lg shadow-sm border p-6">
+                <form class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent" placeholder="Enter first name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent" placeholder="Enter last name">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent" placeholder="Enter email">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                        <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent" placeholder="Enter phone number">
+                    </div>
+                    <button type="submit" class="bg-accent text-white px-6 py-2 rounded-lg hover:bg-accent-dark transition duration-150">
+                        Update Profile
+                    </button>
+                </form>
+            </div>
+        </div>
+    `;
+}
+
+function renderAccountAddress() {
+    const container = document.getElementById('account-content-address');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="space-y-6">
+            <h3 class="text-xl font-semibold text-gray-800">Shipping Addresses</h3>
+            <div class="text-center py-12">
+                <i data-lucide="map-pin" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                <h4 class="text-lg font-semibold text-gray-600 mb-2">No addresses saved</h4>
+                <p class="text-gray-500 mb-6">Add a shipping address for faster checkout</p>
+                <button class="bg-accent text-white px-6 py-2 rounded-lg hover:bg-accent-dark transition duration-150">
+                    Add Address
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function renderAccountPayment() {
+    const container = document.getElementById('account-content-payment');
+    if (!container) return;
+    
+    container.innerHTML = `
+        <div class="space-y-6">
+            <h3 class="text-xl font-semibold text-gray-800">Payment Methods</h3>
+            <div class="text-center py-12">
+                <i data-lucide="credit-card" class="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
+                <h4 class="text-lg font-semibold text-gray-600 mb-2">No payment methods saved</h4>
+                <p class="text-gray-500 mb-6">Add a payment method for faster checkout</p>
+                <button class="bg-accent text-white px-6 py-2 rounded-lg hover:bg-accent-dark transition duration-150">
+                    Add Payment Method
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function showLogoutModal() {
+    const modal = document.getElementById('logout-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+}
+
+function hideLogoutModal() {
+    const modal = document.getElementById('logout-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function logoutUser() {
+    showLogoutModal();
+}
+
+function confirmLogout() {
+    hideLogoutModal();
+    // Here you would typically clear user session, tokens, etc.
+    showToast('Logged Out', 'You have been successfully logged out');
+    // Optionally redirect to login page
+    // window.location.href = 'login.html';
+}
 
 function renderCategoryPage(categoryKey) {
     const container = document.getElementById('category-products-container');
@@ -654,7 +919,7 @@ function renderNewHomepageSections() {
         const unitTotal = calculateBulkPrice(p, initialQty);
         const unitPrice = +(unitTotal / initialQty).toFixed(2);
         const imageMarkup = p.imageUrl
-            ? `<img src="${p.imageUrl}" alt="${p.name}" class="w-full aspect-[1/1] object-cover bg-white" onerror="this.onerror=null; this.outerHTML='\x3cdiv class=\x22w-full aspect-[1/1] bg-white\x22\x3e\x3c/div\x3e'" />`
+            ? `<img src="${p.imageUrl}" alt="${p.name}" class="w-full aspect-[1/1] object-cover bg-white" onerror="this.onerror=null; this.outerHTML='<div class=&quot;w-full aspect-[1/1] bg-white&quot;></div>'" />`
             : `<div class="w-full aspect-[1/1] bg-white"></div>`;
         return `
             <div id="product-card-${p.id}" class="w-64 min-w-[16rem] bg-white rounded-xl shadow border border-card-border overflow-hidden product-card-hover reveal flex flex-col justify-between h-[420px] flex-none snap-start" style="transition-delay: ${i * 80}ms">
@@ -974,7 +1239,7 @@ function renderProductCardHTML(p, context = 'deal') {
         ? `<div class="w-full h-40 overflow-hidden bg-white flex items-center justify-center border-b border-card-border/50"> 
                <img src="${p.imageUrl}" alt="${p.name}" 
                     class="w-full h-full object-cover transition duration-300" 
-                    onerror="this.onerror=null; this.outerHTML='<div class=\x22w-full h-full bg-gray-200\x22></div>';" /> 
+                    onerror="this.onerror=null; this.outerHTML='<div class=&quot;w-full h-full bg-gray-200&quot;></div>';" /> 
            </div>` 
         : `<div class="w-full h-40 bg-gray-200 border-b border-card-border/50"></div>`; 
 
@@ -1427,7 +1692,7 @@ function setPDPView(productId) {
     enrichBulkPricingData();
     const colorHex = (product.imageColor ? `#${product.imageColor}` : '#e5e7eb');
     const imageMarkup = product.imageUrl
-        ? `<img src="${product.imageUrl}" alt="${product.name}" class="w-full h-72 object-cover rounded-xl" onerror="this.onerror=null; this.outerHTML='\x3cdiv class=\x22w-full h-72 rounded-xl\x22 style=\x22background-color:${colorHex}\x22\x3e\x3c/div\x3e'" />`
+        ? `<img src="${product.imageUrl}" alt="${product.name}" class="w-full h-72 object-cover rounded-xl" onerror="this.onerror=null; this.outerHTML='<div class=&quot;w-full h-72 rounded-xl&quot; style=&quot;background-color:${colorHex}&quot;></div>'" />`
         : `<div class="w-full h-72 rounded-xl" style="background-color:${colorHex}"></div>`;
 
     const tiersHtml = ensureBulkPricing(product).map(t => {
@@ -1519,6 +1784,15 @@ window.addEventListener('hashchange', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Check authentication status first
+    const isAuthenticated = sessionStorage.getItem('mshop_authenticated') === 'true';
+    
+    // If not authenticated, redirect to login page
+    if (!isAuthenticated) {
+        window.location.href = 'login.html';
+        return;
+    }
+    
     // Cache DOM elements safely
     cartCountElement = document.getElementById('cart-count');
     wishlistCountElement = document.getElementById('wishlist-count');
@@ -1528,6 +1802,64 @@ document.addEventListener('DOMContentLoaded', () => {
     toastProductName = document.getElementById('toast-product-name');
     logoutModal = document.getElementById('logout-modal');
     pdpContentContainer = document.getElementById('pdp-content-container');
+
+    // Initialize mobile menu functionality
+    const mobileMenuOpen = document.getElementById('mobile-menu-open');
+    const mobileMenuClose = document.getElementById('mobile-menu-close');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    // Function to restore scrolling
+    function restoreScrolling() {
+        document.body.style.overflow = '';
+        document.body.style.overflowY = '';
+        document.documentElement.style.overflow = '';
+    }
+
+    // Function to prevent scrolling
+    function preventScrolling() {
+        document.body.style.overflow = 'hidden';
+    }
+
+    if (mobileMenuOpen && mobileMenu) {
+        mobileMenuOpen.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            preventScrolling(); // Prevent background scrolling
+        });
+    }
+
+    if (mobileMenuClose && mobileMenu) {
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('translate-x-full');
+            restoreScrolling(); // Restore scrolling
+        });
+    }
+
+    // Close mobile menu when clicking outside
+    if (mobileMenu) {
+        mobileMenu.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+                restoreScrolling();
+            }
+        });
+    }
+
+    // Ensure scrolling is restored on window resize (when switching to desktop)
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) { // lg breakpoint
+            if (mobileMenu && mobileMenu.classList.contains('translate-x-0')) {
+                mobileMenu.classList.remove('translate-x-0');
+                mobileMenu.classList.add('translate-x-full');
+            }
+            restoreScrolling();
+        }
+    });
+
+    // Ensure scrolling is restored on page load
+    restoreScrolling();
 
     // Start carousels and UI setups
     startOfferCarousel();

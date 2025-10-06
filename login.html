@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSHOP - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E9 0%, #F1F8E9 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(33, 37, 41, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #00B894, #00A085);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-header h1 {
+            color: #212529;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .login-header p {
+            color: #6C757D;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .user-type-section {
+            margin-bottom: 32px;
+        }
+
+        .user-type-label {
+            color: #212529;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .user-type-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .user-type-card {
+            background: #F8F9FA;
+            border: 2px solid #E9ECEF;
+            border-radius: 12px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .user-type-card:hover {
+            border-color: #00B894;
+            background: #F0FDF9;
+            transform: translateY(-2px);
+        }
+
+        .user-type-card.selected {
+            border-color: #00B894;
+            background: linear-gradient(135deg, #00B894, #00A085);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .user-type-card .icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .user-type-card .label {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #212529;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #FAFAFA;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #00B894;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
+        }
+
+        .login-button {
+            width: 100%;
+            background: linear-gradient(135deg, #00B894, #00A085);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(135deg, #00A085, #009975);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.3);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        #error-message {
+            background: #FF7675;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        #error-message.hidden {
+            display: none;
+        }
+
+        #error-message:not(.hidden) {
+            display: block;
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #E9ECEF;
+        }
+
+        .footer-links a {
+            color: #00B894;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            .login-container {
+                padding: 24px;
+                margin: 10px;
+            }
+
+            .user-type-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .user-type-card {
+                padding: 12px;
+            }
+
+            .login-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>MSHOP</h1>
+            <p>Sign in to your account</p>
+        </div>
+
+        <form id="login-form">
+            <div class="user-type-section">
+                <label class="user-type-label">Select Account Type</label>
+                <div class="user-type-grid">
+                    <div class="user-type-card" data-type="retailer">
+                        <span class="icon">🏪</span>
+                        <span class="label">Retailer</span>
+                    </div>
+                    <div class="user-type-card" data-type="horeca">
+                        <span class="icon">🍽️</span>
+                        <span class="label">Horeca</span>
+                    </div>
+                    <div class="user-type-card" data-type="admin">
+                        <span class="icon">⚙️</span>
+                        <span class="label">Admin</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+            </div>
+
+            <div id="error-message" class="hidden"></div>
+
+            <button type="submit" class="login-button">Sign In</button>
+        </form>
+
+        <div class="footer-links">
+            <a href="index.html">← Back to MSHOP</a>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+</html>

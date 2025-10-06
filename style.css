@@ -208,29 +208,54 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease;
 }
-.about-image-1 { /* Main Farmer Image */
-    top: 0;
-    left: 0;
-    width: 65%;
-    height: 100%;
-    z-index: 20;
-    object-fit: cover;
+
+/* Mobile-first responsive design for about images */
+@media (max-width: 1023px) {
+    #about-image-container {
+        padding-bottom: 0; /* Remove fixed height on mobile */
+        position: static; /* Stack images normally */
+    }
+    .about-image {
+        position: static; /* Remove absolute positioning */
+        width: 100% !important; /* Full width on mobile */
+        height: auto !important; /* Auto height */
+        margin-bottom: 1rem; /* Space between images */
+        z-index: auto;
+    }
+    .about-badge {
+        position: static !important; /* Remove absolute positioning */
+        transform: none !important; /* Remove rotation */
+        margin-top: 1rem;
+        display: inline-block;
+    }
 }
-.about-image-2 { /* Shopper/Experience Image */
-    bottom: 0;
-    right: 0;
-    width: 50%;
-    height: 60%;
-    z-index: 30;
-    object-fit: cover;
-    border: 4px solid #F9FAFB; /* Subtle white border for separation */
-}
-.about-badge { /* 15+ Years Badge */
-    position: absolute;
-    top: 20%;
-    right: 15%;
-    z-index: 40;
-    transform: rotate(-5deg);
+
+/* Desktop overlapping layout */
+@media (min-width: 1024px) {
+    .about-image-1 { /* Main Farmer Image */
+        top: 0;
+        left: 0;
+        width: 65%;
+        height: 100%;
+        z-index: 20;
+        object-fit: cover;
+    }
+    .about-image-2 { /* Shopper/Experience Image */
+        bottom: 0;
+        right: 0;
+        width: 50%;
+        height: 60%;
+        z-index: 30;
+        object-fit: cover;
+        border: 4px solid #F9FAFB; /* Subtle white border for separation */
+    }
+    .about-badge { /* 15+ Years Badge */
+        position: absolute;
+        top: 20%;
+        right: 15%;
+        z-index: 40;
+        transform: rotate(-5deg);
+    }
 }
 
 /* --- FINAL PRODUCT CARD UTILITIES FOR LAYOUT STABILITY --- */
