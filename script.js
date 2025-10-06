@@ -99,7 +99,7 @@ const categoryProducts = {
         { id: currentProductId++, name: "Greek Yogurt", price: 1.25, unit: "ea", imageUrl: "https://images.unsplash.com/photo-1562114808-b4b33cf60f4f?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Z3JlZWslMjB5b2d1cnR8ZW58MHx8MHx8fDA%3D", imageColor: "E0F2F1", tag: "BEST SELLER", brand: "Yogurt Plus", rating: 5 }
     ],
     fashion: [
-        { id: currentProductId++, name: "Men's Slim-Fit Jeans", price: 49.99, unit: "ea", imageUrl: null, imageColor: "1E3A8A", tag: "POPULAR", brand: "StyleCraft", rating: 4 },
+        { id: currentProductId++, name: "Men's Slim-Fit Jeans", price: 49.99, unit: "ea", imageUrl: "https://plus.unsplash.com/premium_photo-1664202526559-e21e9c0fb46a?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D", imageColor: "1E3A8A", tag: "POPULAR", brand: "StyleCraft", rating: 4 },
         { id: currentProductId++, name: "Summer Floral Dress", price: 75.00, unit: "ea", imageUrl: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=300&fit=crop&crop=center", imageColor: "EC4899", tag: "NEW", brand: "Chic Wear", rating: 5 },
         { id: currentProductId++, name: "Leather Boots", price: 120.00, unit: "pair", imageUrl: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop&crop=center", imageColor: "57534E", tag: "", brand: "Footwear Pro", rating: 4 },
         { id: currentProductId++, name: "Sportswear Tee", price: 29.50, unit: "ea", imageUrl: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=300&fit=crop&crop=center", imageColor: "06B6D4", tag: "20% OFF", brand: "ActiveFit", rating: 3 }
