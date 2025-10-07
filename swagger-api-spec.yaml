@@ -1,0 +1,2085 @@
+openapi: 3.0.3
+info:
+  title: MSHOP E-commerce API
+  description: |
+    Comprehensive API specification for MSHOP e-commerce platform based on frontend feature analysis.
+    This API supports a multi-category retailer with features including product catalog, shopping cart,
+    wishlist, user management, orders, deals, and search functionality.
+  version: 1.0.0
+  contact:
+    name: MSHOP Development Team
+    email: dev@mshop.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Development server
+  - url: https://api.mshop.com/v1
+    description: Production server
+
+security:
+  - BearerAuth: []
+
+paths:
+  # Authentication Endpoints
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: Authenticate user and return access token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - userType
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "password123"
+                userType:
+                  type: string
+                  enum: [customer, vendor, admin]
+                  example: "customer"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: User logout
+      description: Invalidate user session and token
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Successfully logged out"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/verify:
+    get:
+      tags:
+        - Authentication
+      summary: Verify token
+      description: Verify if the current token is valid and return user info
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Product Catalog Endpoints
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Get products
+      description: Retrieve products with filtering, sorting, and pagination
+      security: []
+      parameters:
+        - name: category
+          in: query
+          description: Filter by category slug
+          schema:
+            type: string
+            example: "vegetables"
+        - name: search
+          in: query
+          description: Search term for product name or description
+          schema:
+            type: string
+            example: "organic"
+        - name: page
+          in: query
+          description: Page number for pagination
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: sortBy
+          in: query
+          description: Sort products by field
+          schema:
+            type: string
+            enum: [name, price, rating, createdAt]
+            default: "createdAt"
+        - name: sortOrder
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: "desc"
+        - name: minPrice
+          in: query
+          description: Minimum price filter
+          schema:
+            type: number
+            minimum: 0
+        - name: maxPrice
+          in: query
+          description: Maximum price filter
+          schema:
+            type: number
+            minimum: 0
+        - name: brand
+          in: query
+          description: Filter by brand
+          schema:
+            type: string
+        - name: rating
+          in: query
+          description: Minimum rating filter
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+      responses:
+        '200':
+          description: Products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get product by ID
+      description: Retrieve detailed product information including bulk pricing
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Product retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      product:
+                        $ref: '#/components/schemas/Product'
+                      bulkPricing:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/BulkPricing'
+                      relatedProducts:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Categories Endpoints
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Get all categories
+      description: Retrieve all product categories with product counts
+      security: []
+      responses:
+        '200':
+          description: Categories retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+
+  /categories/{slug}/products:
+    get:
+      tags:
+        - Categories
+      summary: Get products by category
+      description: Retrieve products for a specific category
+      security: []
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          description: Category slug
+          schema:
+            type: string
+            example: "vegetables"
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [name, price, rating, createdAt]
+            default: "createdAt"
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: "desc"
+      responses:
+        '200':
+          description: Category products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      category:
+                        $ref: '#/components/schemas/Category'
+                      products:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # Shopping Cart Endpoints
+  /cart:
+    get:
+      tags:
+        - Cart
+      summary: Get user's cart
+      description: Retrieve current user's shopping cart with items and totals
+      responses:
+        '200':
+          description: Cart retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    $ref: '#/components/schemas/Cart'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - Cart
+      summary: Clear cart
+      description: Remove all items from user's cart
+      responses:
+        '200':
+          description: Cart cleared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Cart cleared successfully"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /cart/items:
+    post:
+      tags:
+        - Cart
+      summary: Add item to cart
+      description: Add a product to the user's shopping cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+                - quantity
+              properties:
+                productId:
+                  type: integer
+                  format: int64
+                  example: 101
+                quantity:
+                  type: integer
+                  minimum: 1
+                  example: 2
+      responses:
+        '201':
+          description: Item added to cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      cartItem:
+                        $ref: '#/components/schemas/CartItem'
+                      cartCount:
+                        type: integer
+                        example: 5
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /cart/items/{itemId}:
+    put:
+      tags:
+        - Cart
+      summary: Update cart item quantity
+      description: Update the quantity of a specific cart item
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          description: Cart item ID
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - quantity
+              properties:
+                quantity:
+                  type: integer
+                  minimum: 1
+                  example: 3
+      responses:
+        '200':
+          description: Cart item updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      cartItem:
+                        $ref: '#/components/schemas/CartItem'
+                      totals:
+                        $ref: '#/components/schemas/CartTotals'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - Cart
+      summary: Remove item from cart
+      description: Remove a specific item from the user's cart
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          description: Cart item ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Item removed from cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      cartCount:
+                        type: integer
+                        example: 4
+                      totals:
+                        $ref: '#/components/schemas/CartTotals'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Wishlist Endpoints
+  /wishlist:
+    get:
+      tags:
+        - Wishlist
+      summary: Get user's wishlist
+      description: Retrieve all items in the user's wishlist
+      responses:
+        '200':
+          description: Wishlist retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/WishlistItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Wishlist
+      summary: Add item to wishlist
+      description: Add a product to the user's wishlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - productId
+              properties:
+                productId:
+                  type: integer
+                  format: int64
+                  example: 101
+      responses:
+        '201':
+          description: Item added to wishlist successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      wishlistItem:
+                        $ref: '#/components/schemas/WishlistItem'
+                      wishlistCount:
+                        type: integer
+                        example: 3
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /wishlist/{productId}:
+    delete:
+      tags:
+        - Wishlist
+      summary: Remove item from wishlist
+      description: Remove a product from the user's wishlist
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          description: Product ID to remove from wishlist
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Item removed from wishlist successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      wishlistCount:
+                        type: integer
+                        example: 2
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # User Management Endpoints
+  /user/profile:
+    get:
+      tags:
+        - User
+      summary: Get user profile
+      description: Retrieve current user's profile information and statistics
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+                      stats:
+                        type: object
+                        properties:
+                          totalOrders:
+                            type: integer
+                            example: 15
+                          totalSpent:
+                            type: number
+                            format: float
+                            example: 1250.75
+                          memberSince:
+                            type: string
+                            format: date
+                            example: "2023-01-15"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      tags:
+        - User
+      summary: Update user profile
+      description: Update current user's profile information
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john.doe@example.com"
+                phone:
+                  type: string
+                  example: "+1234567890"
+                avatar:
+                  type: string
+                  format: uri
+                  example: "https://example.com/avatar.jpg"
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /user/addresses:
+    get:
+      tags:
+        - User
+      summary: Get user addresses
+      description: Retrieve all addresses for the current user
+      responses:
+        '200':
+          description: Addresses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Address'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - User
+      summary: Add new address
+      description: Add a new address to the user's address book
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressInput'
+      responses:
+        '201':
+          description: Address added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      address:
+                        $ref: '#/components/schemas/Address'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /user/addresses/{id}:
+    put:
+      tags:
+        - User
+      summary: Update address
+      description: Update an existing address
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Address ID
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressInput'
+      responses:
+        '200':
+          description: Address updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      address:
+                        $ref: '#/components/schemas/Address'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    delete:
+      tags:
+        - User
+      summary: Delete address
+      description: Delete an address from the user's address book
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Address ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Address deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Address deleted successfully"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Orders Endpoints
+  /orders:
+    get:
+      tags:
+        - Orders
+      summary: Get user orders
+      description: Retrieve order history for the current user
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: status
+          in: query
+          description: Filter by order status
+          schema:
+            type: string
+            enum: [pending, confirmed, processing, shipped, delivered, cancelled]
+      responses:
+        '200':
+          description: Orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      orders:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Order'
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags:
+        - Orders
+      summary: Create new order
+      description: Place a new order from cart items
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - items
+                - shippingAddress
+                - paymentMethod
+              properties:
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: integer
+                        format: int64
+                      quantity:
+                        type: integer
+                        minimum: 1
+                      unitPrice:
+                        type: number
+                        format: float
+                shippingAddress:
+                  $ref: '#/components/schemas/AddressInput'
+                paymentMethod:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                      enum: [card, paypal, bank_transfer]
+                    cardId:
+                      type: string
+                notes:
+                  type: string
+                  example: "Please deliver after 6 PM"
+      responses:
+        '201':
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /orders/{id}:
+    get:
+      tags:
+        - Orders
+      summary: Get order details
+      description: Retrieve detailed information about a specific order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Order ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Order details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      order:
+                        $ref: '#/components/schemas/Order'
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/OrderItem'
+                      tracking:
+                        type: object
+                        properties:
+                          trackingNumber:
+                            type: string
+                            example: "TRK123456789"
+                          carrier:
+                            type: string
+                            example: "FedEx"
+                          estimatedDelivery:
+                            type: string
+                            format: date
+                            example: "2024-01-20"
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /orders/{id}/reorder:
+    post:
+      tags:
+        - Orders
+      summary: Reorder items
+      description: Add all items from a previous order to the current cart
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Order ID to reorder
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Items added to cart successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      cartItems:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CartItem'
+                      cartCount:
+                        type: integer
+                        example: 8
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Deals & Promotions Endpoints
+  /deals:
+    get:
+      tags:
+        - Deals
+      summary: Get current deals
+      description: Retrieve all active deals and promotions
+      security: []
+      parameters:
+        - name: category
+          in: query
+          description: Filter deals by category
+          schema:
+            type: string
+        - name: minDiscount
+          in: query
+          description: Minimum discount percentage
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 100
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Deals retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      deals:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Deal'
+                      countdown:
+                        type: object
+                        properties:
+                          endTime:
+                            type: string
+                            format: date-time
+                            example: "2024-01-20T23:59:59Z"
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+
+  /products/best-sellers:
+    get:
+      tags:
+        - Products
+      summary: Get best-selling products
+      description: Retrieve products with highest sales volume
+      security: []
+      parameters:
+        - name: category
+          in: query
+          description: Filter by category
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of products to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: Best sellers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product:
+                          $ref: '#/components/schemas/Product'
+                        salesCount:
+                          type: integer
+                          example: 150
+
+  /products/top-rated:
+    get:
+      tags:
+        - Products
+      summary: Get top-rated products
+      description: Retrieve products with highest ratings
+      security: []
+      parameters:
+        - name: category
+          in: query
+          description: Filter by category
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of products to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: Top-rated products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product:
+                          $ref: '#/components/schemas/Product'
+                        rating:
+                          type: number
+                          format: float
+                          example: 4.8
+                        reviewCount:
+                          type: integer
+                          example: 95
+
+  # Search Endpoints
+  /search:
+    get:
+      tags:
+        - Search
+      summary: Search products
+      description: Search for products with advanced filtering options
+      security: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query
+          schema:
+            type: string
+            example: "organic vegetables"
+        - name: category
+          in: query
+          description: Filter by category
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: filters
+          in: query
+          description: Additional filters (JSON string)
+          schema:
+            type: string
+            example: '{"brand": "Farm Fresh", "minRating": 4}'
+      responses:
+        '200':
+          description: Search results retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Product'
+                      suggestions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            text:
+                              type: string
+                              example: "organic kale"
+                            type:
+                              type: string
+                              enum: [product, category, brand]
+                              example: "product"
+                            category:
+                              type: string
+                              example: "vegetables"
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /search/suggestions:
+    get:
+      tags:
+        - Search
+      summary: Get search suggestions
+      description: Get autocomplete suggestions for search queries
+      security: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Partial search query
+          schema:
+            type: string
+            example: "org"
+        - name: limit
+          in: query
+          description: Maximum number of suggestions
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 10
+      responses:
+        '200':
+          description: Suggestions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        text:
+                          type: string
+                          example: "organic banana"
+                        type:
+                          type: string
+                          enum: [product, category, brand]
+                          example: "product"
+                        category:
+                          type: string
+                          example: "fruits"
+
+  # Reviews Endpoints
+  /products/{id}/reviews:
+    get:
+      tags:
+        - Reviews
+      summary: Get product reviews
+      description: Retrieve reviews for a specific product
+      security: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: integer
+            format: int64
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: rating
+          in: query
+          description: Filter by rating
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+      responses:
+        '200':
+          description: Reviews retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      reviews:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Review'
+                      stats:
+                        type: object
+                        properties:
+                          average:
+                            type: number
+                            format: float
+                            example: 4.3
+                          count:
+                            type: integer
+                            example: 47
+                          distribution:
+                            type: object
+                            properties:
+                              "5":
+                                type: integer
+                                example: 25
+                              "4":
+                                type: integer
+                                example: 15
+                              "3":
+                                type: integer
+                                example: 5
+                              "2":
+                                type: integer
+                                example: 1
+                              "1":
+                                type: integer
+                                example: 1
+                      pagination:
+                        $ref: '#/components/schemas/Pagination'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    post:
+      tags:
+        - Reviews
+      summary: Add product review
+      description: Add a review for a product (requires authentication)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rating
+                - comment
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                  example: 5
+                title:
+                  type: string
+                  example: "Excellent quality!"
+                comment:
+                  type: string
+                  example: "Fresh and delicious organic kale. Will definitely buy again!"
+      responses:
+        '201':
+          description: Review added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      review:
+                        $ref: '#/components/schemas/Review'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        email:
+          type: string
+          format: email
+          example: "user@example.com"
+        name:
+          type: string
+          example: "John Doe"
+        phone:
+          type: string
+          example: "+1234567890"
+        userType:
+          type: string
+          enum: [customer, vendor, admin]
+          example: "customer"
+        avatar:
+          type: string
+          format: uri
+          example: "https://example.com/avatar.jpg"
+        isActive:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-15T10:30:00Z"
+        lastLoginAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T14:22:00Z"
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 101
+        name:
+          type: string
+          example: "Organic Kale Bunch"
+        description:
+          type: string
+          example: "Fresh organic kale, perfect for salads and smoothies"
+        price:
+          type: number
+          format: float
+          example: 3.99
+        oldPrice:
+          type: number
+          format: float
+          example: 4.99
+        unit:
+          type: string
+          example: "bunch"
+        category:
+          type: string
+          example: "vegetables"
+        brand:
+          type: string
+          example: "Farm Fresh"
+        imageUrl:
+          type: string
+          format: uri
+          example: "https://images.unsplash.com/photo-1582145722842-3c8ce65b79b3"
+        imageColor:
+          type: string
+          example: "10B981"
+        tag:
+          type: string
+          example: "FRESH"
+        rating:
+          type: number
+          format: float
+          example: 4.5
+        reviewCount:
+          type: integer
+          example: 23
+        stockQuantity:
+          type: integer
+          example: 50
+        marginPercent:
+          type: number
+          format: float
+          example: 35.5
+        isActive:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-12-01T10:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T14:30:00Z"
+
+    BulkPricing:
+      type: object
+      properties:
+        minQuantity:
+          type: integer
+          example: 5
+        discountPercent:
+          type: number
+          format: float
+          example: 10.0
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: "Fresh Vegetables & Greens"
+        slug:
+          type: string
+          example: "vegetables"
+        description:
+          type: string
+          example: "Fresh, organic vegetables and leafy greens"
+        imageUrl:
+          type: string
+          format: uri
+          example: "https://example.com/category-vegetables.jpg"
+        productCount:
+          type: integer
+          example: 25
+        isActive:
+          type: boolean
+          example: true
+
+    Cart:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        userId:
+          type: integer
+          format: int64
+          example: 1
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        totals:
+          $ref: '#/components/schemas/CartTotals'
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T14:30:00Z"
+
+    CartItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        productId:
+          type: integer
+          format: int64
+          example: 101
+        product:
+          $ref: '#/components/schemas/Product'
+        quantity:
+          type: integer
+          example: 2
+        unitPrice:
+          type: number
+          format: float
+          example: 3.99
+        totalPrice:
+          type: number
+          format: float
+          example: 7.98
+        discountPercent:
+          type: number
+          format: float
+          example: 0
+        addedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T12:00:00Z"
+
+    CartTotals:
+      type: object
+      properties:
+        subtotal:
+          type: number
+          format: float
+          example: 45.50
+        tax:
+          type: number
+          format: float
+          example: 3.64
+        shipping:
+          type: number
+          format: float
+          example: 5.99
+        discount:
+          type: number
+          format: float
+          example: 2.25
+        total:
+          type: number
+          format: float
+          example: 52.88
+
+    WishlistItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        userId:
+          type: integer
+          format: int64
+          example: 1
+        productId:
+          type: integer
+          format: int64
+          example: 101
+        product:
+          $ref: '#/components/schemas/Product'
+        addedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:00:00Z"
+
+    Address:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        type:
+          type: string
+          enum: [home, work, other]
+          example: "home"
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        street:
+          type: string
+          example: "123 Main Street"
+        city:
+          type: string
+          example: "New York"
+        state:
+          type: string
+          example: "NY"
+        zipCode:
+          type: string
+          example: "10001"
+        country:
+          type: string
+          example: "USA"
+        phone:
+          type: string
+          example: "+1234567890"
+        isDefault:
+          type: boolean
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          example: "2023-01-15T10:00:00Z"
+
+    AddressInput:
+      type: object
+      required:
+        - type
+        - firstName
+        - lastName
+        - street
+        - city
+        - state
+        - zipCode
+        - country
+      properties:
+        type:
+          type: string
+          enum: [home, work, other]
+          example: "home"
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        street:
+          type: string
+          example: "123 Main Street"
+        city:
+          type: string
+          example: "New York"
+        state:
+          type: string
+          example: "NY"
+        zipCode:
+          type: string
+          example: "10001"
+        country:
+          type: string
+          example: "USA"
+        phone:
+          type: string
+          example: "+1234567890"
+        isDefault:
+          type: boolean
+          example: false
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1001
+        userId:
+          type: integer
+          format: int64
+          example: 1
+        orderNumber:
+          type: string
+          example: "ORD-2024-001001"
+        status:
+          type: string
+          enum: [pending, confirmed, processing, shipped, delivered, cancelled]
+          example: "confirmed"
+        subtotal:
+          type: number
+          format: float
+          example: 45.50
+        tax:
+          type: number
+          format: float
+          example: 3.64
+        shipping:
+          type: number
+          format: float
+          example: 5.99
+        discount:
+          type: number
+          format: float
+          example: 2.25
+        total:
+          type: number
+          format: float
+          example: 52.88
+        shippingAddress:
+          $ref: '#/components/schemas/Address'
+        paymentMethod:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [card, paypal, bank_transfer]
+              example: "card"
+            last4:
+              type: string
+              example: "1234"
+        notes:
+          type: string
+          example: "Please deliver after 6 PM"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-15T14:30:00Z"
+
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        orderId:
+          type: integer
+          format: int64
+          example: 1001
+        productId:
+          type: integer
+          format: int64
+          example: 101
+        product:
+          $ref: '#/components/schemas/Product'
+        quantity:
+          type: integer
+          example: 2
+        unitPrice:
+          type: number
+          format: float
+          example: 3.99
+        totalPrice:
+          type: number
+          format: float
+          example: 7.98
+        discountPercent:
+          type: number
+          format: float
+          example: 0
+
+    Deal:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 901
+        product:
+          $ref: '#/components/schemas/Product'
+        originalPrice:
+          type: number
+          format: float
+          example: 199.99
+        salePrice:
+          type: number
+          format: float
+          example: 129.99
+        discountPercent:
+          type: number
+          format: float
+          example: 35
+        startDate:
+          type: string
+          format: date-time
+          example: "2024-01-15T00:00:00Z"
+        endDate:
+          type: string
+          format: date-time
+          example: "2024-01-20T23:59:59Z"
+        isActive:
+          type: boolean
+          example: true
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        productId:
+          type: integer
+          format: int64
+          example: 101
+        userId:
+          type: integer
+          format: int64
+          example: 1
+        userName:
+          type: string
+          example: "John D."
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 5
+        title:
+          type: string
+          example: "Excellent quality!"
+        comment:
+          type: string
+          example: "Fresh and delicious organic kale. Will definitely buy again!"
+        isVerifiedPurchase:
+          type: boolean
+          example: true
+        helpfulCount:
+          type: integer
+          example: 3
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-10T15:30:00Z"
+
+    Pagination:
+      type: object
+      properties:
+        currentPage:
+          type: integer
+          example: 1
+        totalPages:
+          type: integer
+          example: 5
+        totalItems:
+          type: integer
+          example: 95
+        itemsPerPage:
+          type: integer
+          example: 20
+        hasNextPage:
+          type: boolean
+          example: true
+        hasPreviousPage:
+          type: boolean
+          example: false
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              example: "Invalid input data"
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    example: "email"
+                  message:
+                    type: string
+                    example: "Invalid email format"
+
+  responses:
+    BadRequest:
+      description: Bad request - Invalid input data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Unauthorized - Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Products
+    description: Product catalog management
+  - name: Categories
+    description: Product category operations
+  - name: Cart
+    description: Shopping cart operations
+  - name: Wishlist
+    description: User wishlist management
+  - name: User
+    description: User profile and account management
+  - name: Orders
+    description: Order processing and management
+  - name: Deals
+    description: Deals and promotions management
+  - name: Search
+    description: Product search functionality
+  - name: Reviews
+    description: Product reviews and ratings

@@ -736,14 +736,27 @@ function renderAccountPayment() {
 function showLogoutModal() {
     const modal = document.getElementById('logout-modal');
     if (modal) {
+        const panel = modal.querySelector('.transform');
         modal.classList.remove('hidden');
+        modal.classList.remove('opacity-0');
+        if (panel) {
+            panel.classList.remove('translate-y-4');
+            // allow CSS to handle transition to visible (translate-y-0 implicit)
+        }
     }
 }
 
 function hideLogoutModal() {
     const modal = document.getElementById('logout-modal');
     if (modal) {
-        modal.classList.add('hidden');
+        const panel = modal.querySelector('.transform');
+        modal.classList.add('opacity-0');
+        if (panel) {
+            panel.classList.add('translate-y-4');
+        }
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
     }
 }
 
@@ -755,8 +768,14 @@ function confirmLogout() {
     hideLogoutModal();
     // Here you would typically clear user session, tokens, etc.
     showToast('Logged Out', 'You have been successfully logged out');
-    // Optionally redirect to login page
-    // window.location.href = 'login.html';
+    // Update auth state so subsequent visits to index redirect to login
+    try {
+        sessionStorage.setItem('mshop_authenticated', 'false');
+    } catch (e) {}
+    // Redirect to login page after a short delay to show the toast
+    setTimeout(() => {
+        window.location.href = 'login.html';
+    }, 1500);
 }
 
 function renderCategoryPage(categoryKey) {
@@ -799,7 +818,7 @@ function renderCategoryPage(categoryKey) {
             : `<div class="w-full h-48 rounded-lg" style="background-color:${colorHex}"></div>`;
         
         return `
-            <div class="bg-white p-4 rounded-xl shadow-lg border border-card-border reveal">
+            <div class="bg-white p-4 rounded-xl shadow-lg border border-card-border reveal flex flex-col">
                 <div class="relative">
                     ${imageElement}
                     ${p.tag ? `<span class="absolute top-2 left-2 bg-accent text-white text-xs px-2 py-1 rounded-full">${p.tag}</span>` : ''}
@@ -807,23 +826,23 @@ function renderCategoryPage(categoryKey) {
                         <i data-lucide="heart" class="w-4 h-4"></i>
                     </button>
                 </div>
-                <div class="mt-4">
+                <div class="mt-4 flex-1 flex flex-col">
                     <h4 class="font-semibold text-primary">${p.name}</h4>
                     <p class="text-sm text-gray-500">${p.brand || 'Brand'}</p>
                     <div class="flex items-center mt-2">
                         ${generateStarRating(p.rating || 4)}
                         <span class="text-sm text-gray-500 ml-2">(${computeSalesCount(p)})</span>
                     </div>
-                    <div class="flex items-center justify-between mt-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-auto pt-4 gap-3">
                         <div>
-                            <span class="text-lg font-bold text-primary">${formatCurrency(p.price)}</span>
+                            <span id="cat-price-${p.id}" class="text-lg font-bold text-primary">${formatCurrency(p.price)}</span>
                             <span class="text-sm text-gray-500">/${p.unit || 'ea'}</span>
                         </div>
-                        <div class="flex items-center space-x-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <button class="w-8 h-8 rounded-full bg-gray-200 text-primary font-bold" onclick="decCategoryQty(${p.id})">-</button>
-                            <input id="category-qty-${p.id}" type="number" min="1" max="500" value="1" class="w-16 p-2 border rounded-md text-center" oninput="onCategoryQtyChange(${p.id}, this.value)" />
+                            <input id="cat-qty-input-${p.id}" type="number" min="1" max="500" value="1" class="w-14 p-2 border rounded-md text-center" oninput="onCategoryQtyChange(${p.id}, this.value)" />
                             <button class="w-8 h-8 rounded-full bg-gray-200 text-primary font-bold" onclick="incCategoryQty(${p.id})">+</button>
-                            <button class="bg-accent text-white px-4 py-2 rounded-lg hover:bg-secondary-accent transition-colors" onclick="addCategoryToCart(${p.id})">
+                            <button class="w-full sm:w-auto bg-accent text-white px-4 py-2 rounded-lg hover:bg-secondary-accent transition-colors" onclick="addCategoryToCart(${p.id})">
                                 <i data-lucide="shopping-cart" class="w-4 h-4"></i>
                             </button>
                         </div>
@@ -1101,6 +1120,84 @@ function MapsTo(page, subview) {
 }
 // Expose for inline handlers if present
 window.MapsTo = MapsTo;
+
+// Function to close mobile menu
+function closeMobileMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenu) {
+        const panel = mobileMenu.querySelector('.transform');
+        if (panel) {
+            panel.classList.remove('translate-x-0');
+            panel.classList.add('translate-x-full');
+        }
+        // Hide overlay after panel transition for smooth close
+        setTimeout(() => {
+            mobileMenu.classList.add('hidden');
+            // Restore scrolling
+            document.body.style.overflow = '';
+            document.body.style.overflowY = '';
+            document.documentElement.style.overflow = '';
+        }, 300);
+    }
+}
+
+// Function to toggle mobile search
+function toggleMobileSearch() {
+    const container = document.getElementById('mobile-search-container');
+    if (!container) return;
+    const isHidden = container.classList.contains('hidden');
+    // Close mobile menu if open to avoid overlapping layers
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (mobileMenu) {
+        const panel = mobileMenu.querySelector('.transform');
+        if (panel) {
+            panel.classList.add('translate-x-full');
+            panel.classList.remove('translate-x-0');
+        }
+        mobileMenu.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+    if (isHidden) {
+        container.classList.remove('hidden');
+        const input = document.getElementById('mobile-search-input');
+        if (input) setTimeout(() => input.focus(), 0);
+    } else {
+        container.classList.add('hidden');
+    }
+}
+
+// Expose functions to global scope for HTML onclick handlers
+window.navigateTo = navigateTo;
+window.addToCart = addToCart;
+window.toggleWishlist = toggleWishlist;
+window.showToast = showToast;
+window.incCartItem = incCartItem;
+window.decCartItem = decCartItem;
+window.removeFromCart = removeFromCart;
+window.setAccountView = setAccountView;
+window.showLogoutModal = showLogoutModal;
+window.hideLogoutModal = hideLogoutModal;
+window.confirmLogout = confirmLogout;
+window.addCategoryToCart = addCategoryToCart;
+window.incCategoryQty = incCategoryQty;
+window.decCategoryQty = decCategoryQty;
+window.addArrivalsToCart = addArrivalsToCart;
+window.incArrivalsQty = incArrivalsQty;
+window.decArrivalsQty = decArrivalsQty;
+window.addRecommendedToCart = addRecommendedToCart;
+window.incRecommendedQty = incRecommendedQty;
+window.decRecommendedQty = decRecommendedQty;
+window.addBulkToCart = addBulkToCart;
+window.incBulkQty = incBulkQty;
+window.decBulkQty = decBulkQty;
+window.addFilteredToCart = addFilteredToCart;
+window.incFilteredQty = incFilteredQty;
+window.decFilteredQty = decFilteredQty;
+window.viewWishlist = viewWishlist;
+window.logoutUser = logoutUser;
+window.renderProductPage = renderProductPage;
+window.closeMobileMenu = closeMobileMenu;
+window.toggleMobileSearch = toggleMobileSearch;
 
 // --- Homepage bulk handlers ---
 function onArrivalsQtyChange(productId, qty) {
@@ -1826,17 +1923,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (mobileMenuOpen && mobileMenu) {
         mobileMenuOpen.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-full');
-            mobileMenu.classList.add('translate-x-0');
+            const panel = mobileMenu.querySelector('.transform');
+            mobileMenu.classList.remove('hidden'); // show overlay
+            if (panel) {
+                panel.classList.remove('translate-x-full');
+                panel.classList.add('translate-x-0');
+            }
             preventScrolling(); // Prevent background scrolling
         });
     }
 
     if (mobileMenuClose && mobileMenu) {
         mobileMenuClose.addEventListener('click', () => {
-            mobileMenu.classList.remove('translate-x-0');
-            mobileMenu.classList.add('translate-x-full');
-            restoreScrolling(); // Restore scrolling
+            const panel = mobileMenu.querySelector('.transform');
+            if (panel) {
+                panel.classList.remove('translate-x-0');
+                panel.classList.add('translate-x-full');
+            }
+            setTimeout(() => {
+                mobileMenu.classList.add('hidden');
+                restoreScrolling(); // Restore scrolling
+            }, 300);
         });
     }
 
@@ -1844,9 +1951,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mobileMenu) {
         mobileMenu.addEventListener('click', (e) => {
             if (e.target === mobileMenu) {
-                mobileMenu.classList.remove('translate-x-0');
-                mobileMenu.classList.add('translate-x-full');
-                restoreScrolling();
+                const panel = mobileMenu.querySelector('.transform');
+                if (panel) {
+                    panel.classList.remove('translate-x-0');
+                    panel.classList.add('translate-x-full');
+                }
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                    restoreScrolling();
+                }, 300);
             }
         });
     }
@@ -1854,9 +1967,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ensure scrolling is restored on window resize (when switching to desktop)
     window.addEventListener('resize', () => {
         if (window.innerWidth >= 1024) { // lg breakpoint
-            if (mobileMenu && mobileMenu.classList.contains('translate-x-0')) {
-                mobileMenu.classList.remove('translate-x-0');
-                mobileMenu.classList.add('translate-x-full');
+            if (mobileMenu) {
+                const panel = mobileMenu.querySelector('.transform');
+                if (panel) {
+                    panel.classList.remove('translate-x-0');
+                    panel.classList.add('translate-x-full');
+                }
+                mobileMenu.classList.add('hidden');
             }
             restoreScrolling();
         }

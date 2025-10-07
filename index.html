@@ -43,7 +43,8 @@
                     M<span class="text-accent">SHOP</span>
                 </a>
 
-                <div class="hidden lg:flex flex-grow max-w-xl mx-8">
+                <!-- Desktop Search Bar -->
+                <div class="hidden md:flex flex-grow max-w-xl mx-8">
                     <div class="relative w-full">
                         <input type="text" placeholder="Search products, deals, and categories..."
                                class="w-full pl-4 pr-12 py-3 border border-card-border rounded-full focus:ring-accent focus:border-accent transition duration-150 text-base shadow-sm"
@@ -56,7 +57,7 @@
 
                 <div class="flex items-center space-x-3 sm:space-x-6">
                     <!-- Mobile search icon -->
-                    <button class="lg:hidden p-2 text-primary hover:text-accent" aria-label="Search">
+                    <button class="md:hidden p-2 text-primary hover:text-accent" aria-label="Search" onclick="toggleMobileSearch()">
                         <i data-lucide="search" class="w-5 h-5"></i>
                     </button>
 
@@ -82,9 +83,23 @@
                     </button>
                 </div>
             </div>
-        </div>
+    </header>
 
-        <nav class="bg-primary text-white hidden md:block border-t border-gray-700">
+    <!-- Mobile Search Input Container (Outside Header) -->
+    <div id="mobile-search-container" class="hidden md:hidden bg-white border-b border-card-border shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="relative">
+                <input type="search" id="mobile-search-input" placeholder="Search products, deals, and categories..."
+                       class="w-full pl-4 pr-12 py-3 border border-card-border rounded-full focus:ring-accent focus:border-accent transition duration-150 text-base shadow-sm"
+                       aria-label="Search all products">
+                <button class="absolute right-0 top-0 mt-3 mr-4 text-gray-500 hover:text-primary transition" aria-label="Perform Search">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bg-primary text-white hidden md:block border-t border-gray-700">
             <div class="max-w-7xl mx-auto px-4 lg:px-8">
                 <div class="flex justify-start space-x-12 h-12 items-center text-sm font-medium">
                     
@@ -223,7 +238,7 @@
         </nav>
     </header>
 
-    <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden transition-opacity duration-300 opacity-0 md:hidden">
+    <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden md:hidden">
         <div class="fixed top-0 right-0 w-64 h-full bg-white shadow-xl p-6 transform translate-x-full transition-transform duration-300">
             <div class="flex justify-between items-center mb-6">
                 <span class="text-xl font-bold text-primary">Menu</span>
@@ -232,10 +247,10 @@
                 </button>
             </div>
             <nav class="flex flex-col space-y-4 font-medium">
-                <a href="#account" onclick="navigateTo('account', 'dashboard');" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="user" class="w-4 h-4 text-accent"></i> <span>Account</span></a>
-                <a href="#" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="cpu" class="w-4 h-4 text-accent"></i> <span>Electronics</span></a>
-                <a href="#" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="carrot" class="w-4 h-4 text-accent"></i> <span>Groceries</span></a>
-                <a href="#" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="shirt" class="w-4 h-4 text-accent"></i> <span>Fashion & Apparel</span></a>
+                <a href="#account" onclick="navigateTo('account', 'dashboard'); closeMobileMenu();" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="user" class="w-4 h-4 text-accent"></i> <span>Account</span></a>
+                <a href="#category-electronics" onclick="navigateTo('category', 'electronics'); closeMobileMenu();" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="cpu" class="w-4 h-4 text-accent"></i> <span>Electronics</span></a>
+                <a href="#category-vegetables" onclick="navigateTo('category', 'vegetables'); closeMobileMenu();" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="carrot" class="w-4 h-4 text-accent"></i> <span>Groceries</span></a>
+                <a href="#category-fashion" onclick="navigateTo('category', 'fashion'); closeMobileMenu();" class="text-primary hover:text-accent flex items-center space-x-2"><i data-lucide="shirt" class="w-4 h-4 text-accent"></i> <span>Fashion & Apparel</span></a>
                 <a href="#" class="pt-4 text-secondary-accent border-t border-card-border">Sign In / Register</a>
             </nav>
         </div>
@@ -890,7 +905,7 @@
                     <div class="lg:w-3/4">
                         <div id="category-page-header" class="mb-6 pb-4 border-b border-card-border">
                             </div>
-                        <div id="category-products-container" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+                        <div id="category-products-container" class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 sm:gap-6 md:grid-cols-3 md:gap-8 lg:grid-cols-4">
                             </div>
                     </div>
                 </div>
@@ -936,7 +951,7 @@
                         <div id="deals-page-header" class="mb-6 pb-4 border-b border-card-border">
                             <h2 class="text-3xl font-bold text-primary">All Sale Items</h2>
                         </div>
-                        <div id="deals-products-container" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                        <div id="deals-products-container" class="grid grid-cols-2 gap-x-4 gap-y-4 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4" style="grid-template-columns: repeat(2, minmax(0, 1fr)); display: grid;">
                             </div>
                     </div>
                 </div>
@@ -1167,7 +1182,7 @@
     </div>
 
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 
 </body>
 </html>
